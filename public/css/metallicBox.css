@@ -1,0 +1,80 @@
+.metalWrap{
+  display: inline-block;
+  margin: 20px;
+
+  /* Strong, visible depth */
+  filter: drop-shadow(0 18px 22px rgba(0,0,0,.28));
+}
+
+.metallicBox{
+  --convexity: 10;
+  --metal: neutral;
+
+  border-radius: 10px;
+  width: 225px;
+  height: 200px;
+  background: #bf97bf;
+
+  overflow: hidden;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Frosted glass panel (wraps h2 + inputs) */
+.glassPanel{
+  padding: 14px 16px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+}
+
+/* Make text readable on glass */
+.glassPanel h2{
+  margin: 0 0 10px;
+  color: rgba(0,0,0,0.85);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+}
+
+/* Layout for input + button */
+.controls{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Glassy controls */
+.controls input,
+.controls button{
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.35);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 6px 16px rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+
+  padding: 10px 12px;
+}
+
+/* Button feel */
+.controls button{
+  cursor: pointer;
+  font-weight: 600;
+}
+.controls{
+  display: flex;
+  flex-direction: column;   /* stack vertically */
+  gap: 10px;
+  align-items: stretch;     /* same width */
+}
