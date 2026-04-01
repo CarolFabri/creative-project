@@ -1,0 +1,20 @@
+  <%- include ('../../partials/header') %>
+  <%- include('../../partials/nav') %>
+      <div class="auth-hero page-login">
+        <main id="loginBox">
+        
+            <form class="neon-form" action="/login" method="POST">
+                <label>Email</label>
+                <input type="text" id="username" name="username"><br>
+
+                 <label for="password">Password</label>
+                 <input type="password" id="password" name="password" required><br>
+
+                <input class="button-res" type="submit" value="Login">
+            </form>
+        </main>
+     </div>
+           <% if (errorMessage) { %>
+  <p ><%= errorMessage %></p>
+<% } %>
+ <%- include ('../../partials/footer') %>

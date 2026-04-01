@@ -1,0 +1,33 @@
+<nav class="nav">
+
+ 
+  <button class="burger" aria-label="Open Menu" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+
+  <ul class="menu">
+   <% if (!isLoggedIn) { %>
+  <li><a href="/dataCollector">Zodiac Travel</a></li>
+  <li><a href="/login">Login</a></li>
+  <li><a href="/register">Register</a></li>
+  <% } else { %>
+  <li><a href="/logout">Logout</a></li>
+  <li><a href="/globe-page">Globe</a></li>
+  <li><a href="/profile">Profile</a></li>
+  <li><a href="/social">Social</a></li>
+  <% } %>
+  </ul>
+
+</nav>
+<script>
+  const burger = document.querySelector('.burger');
+  const menu = document.querySelector('.menu');
+
+  burger.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('open');
+    burger.setAttribute('aria-expanded', isOpen);
+  });
+</script>

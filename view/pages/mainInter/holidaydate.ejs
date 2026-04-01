@@ -1,0 +1,53 @@
+<%- include('../../partials/header') %>
+<%- include('../../partials/nav') %>
+
+<main>
+    <h1>Zodiac Travel</h1>
+    <p>Welcome to Zodiac Travel.....</p>
+
+    <div class="container">
+        <h2>Enter your holiday date</h2>
+
+        <form action="/result" method="POST" id="holidayDateForm">
+            <input type="hidden" name="dob" value="<%= dob %>">
+
+            <div class="controls">
+                <input type="date" id="holidayDate" name="holidayDate" required>
+                <button type="submit">Submit</button>
+            </div>
+
+            <p id="holidayDateError"></p>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById("holidayDateForm");
+        const holidayDateInput = document.getElementById("holidayDate");
+        const holidayDateError = document.getElementById("holidayDateError");
+
+        form.addEventListener("submit", function (event) {
+            const holidayDateValue = holidayDateInput.value;
+
+            if (!holidayDateValue) {
+                holidayDateError.textContent = "Please enter your holiday date.";
+                event.preventDefault();
+                return;
+            }
+
+            const today = new Date();
+            const holidayDate = new Date(holidayDateValue);
+
+            today.setHours(0, 0, 0, 0);
+            holidayDate.setHours(0, 0, 0, 0);
+
+            if (holidayDate < today) {
+                holidayDateError.textContent = "Please enter today or a future date.";
+                event.preventDefault();
+            } else {
+                holidayDateError.textContent = "";
+            }
+        });
+    </script>
+</main>
+
+<%- include('../../partials/footer') %>
