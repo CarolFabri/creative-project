@@ -2,6 +2,7 @@ const express = require("express");
 const sessions = require("express-session");
 const app = express();
 const path = require('path');
+const multer = require('multer');
 require('dotenv').config();
 const OpenAI = require("openai");
 const { getZodiacSign } = require("./utils/zodiacsign");
@@ -136,6 +137,18 @@ function checkLoggedInState(req) {
   return req.session && req.session.username
 }
 
+//save image inside public/uploads 
+
+const storage = multer.diskStorage({
+  destination: "public/uploads/",
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+
 app.get("/", (req, res) => {
   res.render("pages/mainInter/dataCollector");
 });
@@ -160,6 +173,7 @@ app.get('/login', (req, res) => {
 app.get('/globe-page', requireLogin, (req, res) => {
   res.render('pages/mainInter/globe');
 });
+
 
 app.get('/profile', async (req, res) => {
 
@@ -211,6 +225,7 @@ app.post('/profile', async (req, res) => {
   if (!req.session.username) {
     return res.redirect('/login');
   }
+  
 
   await userModel.updateProfile(
     req.session.username,
@@ -233,8 +248,31 @@ app.post('/profile', async (req, res) => {
     user: user,
     messages: messages
   });
+  
 });
 
+app.post('/profile/image', upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.session.username) {
+      return res.redirect('/login');
+    }
+
+    if (!req.file) {
+      return res.send('Please select an image');
+    }
+
+    const imagePath = '/uploads/' + req.file.filename;
+
+    await userModel.updateProfileImage(req.session.username,imagePath)
+  
+    res.redirect('/profile');
+  } catch (error) {
+    console.log(error);
+    res.send('Error uploading profile image');
+  }
+});
+
+//Social media routes get and post 
 app.get('/social', async (req, res) => {
   res.render('pages/mainInter/social', {
     isLoggedIn: checkLoggedInState(req),
@@ -243,17 +281,10 @@ app.get('/social', async (req, res) => {
   });
 });
 
+
+
 app.get('/getposts', async (req, res) => {
   res.json({ posts: await posts.getLastNPosts(10) });
-});
-//posts 
-app.post('/newpost', async (req, res) => {
-  await posts.addPost(
-    req.body.caption,
-    req.body.image,
-    req.session.username
-  );
-  res.redirect('/social');
 });
 
 app.post('/addcomment', async (req, res) => {
@@ -266,12 +297,28 @@ app.post('/addcomment', async (req, res) => {
   res.redirect('/social');
 });
 
+app.post("/posts/create", upload.single("avatar"), async (req, res) => {
+  try {
+    const image = req.file ? "/uploads/" + req.file.filename : "";
+
+    await posts.addPost(
+      req.session.username,
+      req.body.caption,
+      image
+    );
+
+    res.redirect("/social");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error creating post");
+  }
+});
 
 
 app.get('/logout', (req, res) => {
   req.session.destroy(()=> {
     res.clearCookie('connect.sid');
-    res.render('pages/loggedout', );
+    res.render('pages/mainInter/loggedout', );
   });
   
 });
@@ -313,6 +360,32 @@ app.post("/result", async (req, res) => {
     const flightLink = `https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(city)}`;
     const hotelLink = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}`;
     const activityLink = `https://www.viator.com/searchResults/all?text=${encodeURIComponent(city)}`;
+
+    // save chat history only if logged in
+    if (req.session && req.session.username) {
+      const userMessage = `DOB: ${dob}, Holiday date: ${holidayDate}, Zodiac: ${zodiac}`;
+      const botMessage = `Destination: ${answer.city}
+Why: ${answer.why}
+Activities: ${answer.activities}
+Weather: ${answer.weather}
+Tip: ${answer.tip}`;
+
+      let chatSession = await ChatSession.findOne({ username: req.session.username });
+
+      if (!chatSession) {
+        chatSession = new ChatSession({
+          username: req.session.username,
+          messages: []
+        });
+      }
+chatSession.messages.push(
+  { sender: "user", text: userMessage },
+  { sender: "zodiac travel", text: botMessage } // was having error because sender needs to match with mode in message schema
+);
+
+await chatSession.save();
+         await chatSession.save();
+    }
 
     res.render("pages/mainInter/generator", {
       answer,

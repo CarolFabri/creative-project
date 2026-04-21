@@ -1,6 +1,8 @@
 <%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
+
 <h1>Your Zodiac Holiday</h1>
+
 <p><strong>Destination:</strong> <%= answer.city %></p>
 <p><strong>Why it matches this zodiac:</strong> <%= answer.why %></p>
 <p><strong>Best activities:</strong> <%= answer.activities %></p>
@@ -11,9 +13,13 @@
 <a href="<%= hotelLink %>" target="_blank">Hotels</a>
 <a href="<%= activityLink %>" target="_blank">Activities</a>
 
-<p>Wants more feature, please sign up</p>
-<a href="/register" class="register-btn">Click Here to Register</a>
 
-<p>Already have an account please click here to login</p>
-<a href="/login" class="register-btn">Login </a>
-<%- include ('../../partials/footer') %> 
+
+<% if (!isLoggedIn) { %>
+<p>Want more features? Please sign up.</p>
+<a href="/register" class="register-btn">Click Here to Register</a>
+<% } else { %>
+  <p>You can view your travel generator history in your profile.</p>
+<% } %>
+
+<%- include('../../partials/footer') %>

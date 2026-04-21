@@ -1,33 +1,40 @@
 <%- include('../../partials/header') %>
-<%- include('../../partials/nav') %>h7e
+<%- include('../../partials/nav') %>
  <div class="auth-hero page-login">
        <main id="loginBox" class="profile">
-         <div class="profile-content">
-            <h1 class="profileTitle">Welcome, <%= user.username %></h1>
+        <div class="profile-section">
+  <h2><%= user.username %></h2>
 
-            <form class="profile-input" action="/profile" method="POST">
-                <label >First Name</label>
-                 <input type ="text" name= "firstname" value="<%= user.firstname %>">
-
-                  <label>Last Name</label>
-                  <input type ="text" name= "lastname" value="<%= user.lastname%>">
-
-                  <input class="button-res profile" type="submit" value="submit">
-            </form>
-          <section class="chat-history">
-  <h2 class="profileTitle">My Chat History</h2>
-
-  <% if (!messages || messages.length === 0) { %>
-    <p>No chat history yet. Start a reading first!</p>
+  <% if (user.profileImage) { %>
+    <img src="<%= user.profileImage %>" alt="profile image" width="150">
   <% } else { %>
-    <% messages.forEach(msg => { %>
-      <% if (msg.sender === "user") { %>
-       <div class="history"><p><strong>You:</strong> <%= msg.text %></p></div> 
-      <% } else { %>
-        <div class="history"><p><strong>Zodiac Travel Generator History</strong> <%= msg.text %></p></div>
-      <% } %>
-    <% }) %>
+    <p>No profile image yet.</p>
   <% } %>
+
+  <form class="profile-img" action="/profile/image" method="POST" enctype="multipart/form-data">
+    <input type="file" name="avatar" accept="image/png, image/jpeg">
+    <input class="button-res profile" type="submit" value="Upload Profile Picture">
+  </form>
+</div>
+
+          <section class="chat-history">
+<h2 class="profileTitle">My Chat History</h2>
+
+<% if (messages && messages.length > 0) { %>
+  <% messages.forEach(msg => { %>
+    <% if (msg.sender === "user") { %>
+      <div class="history">
+        <p><strong>You:</strong> <%= msg.text %></p>
+      </div>
+    <% } else { %>
+      <div class="history">
+        <p><strong>Generator:</strong> <%= msg.text %></p>
+      </div>
+    <% } %>
+  <% }) %>
+<% } else { %>
+  <p>No chat history yet.</p>
+<% } %>
 </section>
 
           </div>

@@ -4,7 +4,10 @@ const { Schema, model } = mongoose;
 const userSchema = new Schema({
   username: String,
   password: String,
-  isAdmin: Boolean
+  profileImage: {
+    type:String,
+    default:''
+  }
 })
 
 const userData = model('users', userSchema)
@@ -60,12 +63,19 @@ async function deleteUserById(id) {
   return userData.deleteOne({ _id: id });
 }
 
-
+async function updateProfileImage(username,profileImage){
+  return userData.updateOne(
+    {username: username},
+    {$set: {profileImage: profileImage}},
+    {new: true}
+  );
+}
 module.exports = {
   addUser,
   checkUser,
   findUser,
   updateProfile,
+  updateProfileImage,
   findUserbyUsername,
   getAllUsersWithoutPasswords,
   deleteUserById

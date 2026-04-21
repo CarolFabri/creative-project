@@ -1,12 +1,12 @@
-<%- include ('../../partials/header') %>
+<%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
 
 <h1>Zodiac Travel Social</h1>
 
 <h2>Create a new post</h2>
-<form action="/newpost" method="POST">
-  <input type="text" name="image" placeholder="Image URL" required>
-  <textarea name="caption" placeholder="Write your caption" required></textarea>
+<form action="/posts/create" method="POST" enctype="multipart/form-data">
+  <input type="text" name="caption" placeholder="Write something..." />
+  <input type="file" name="avatar" accept="image/png, image/jpeg" />
   <button type="submit">Post</button>
 </form>
 
