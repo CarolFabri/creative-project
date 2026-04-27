@@ -165,14 +165,18 @@ app.get("/", async (req, res) => {
     res.send("Error loading homepage");
   }
 });
-
-app.get("/dataCollector", requireLogin, (req, res) => {
-  res.render("pages/features/travel", {
-    username: req.session.username
+app.get("/dataCollector", (req, res) => {
+  res.render("pages/mainInter/dataCollector", {
+    errorMessage: null
   });
 });
+// app.get("/dataCollector", (req, res) => {
+//   res.render("pages/mainInter/dataCollector", {
 
-app.get("/holidaydate", requireLogin,(req, res)=>{
+//   });
+// });
+
+app.get("/holidaydate",(req, res)=>{
   res.render("pages/mainInter/holidaydate");
 })
 
@@ -350,17 +354,37 @@ app.post('/register', async (req, res) => {
     return res.render('pages/mainInter/registration_failed', { isLoggedIn: false });
   }
 });
-
 app.post("/holidaydate", (req, res) => {
-  const dob = req.body.dob;
-   try {
-    // your generator logic here
+  try {
+    const dob = req.body.dob;
+
+    if (!dob) {
+      return res.render("pages/mainInter/dataCollector", {
+        errorMessage: "Please enter your date of birth."
+      });
+    }
+
+    res.render("pages/mainInter/holidaydate", {
+      dob: dob
+    });
+
   } catch (error) {
     console.log(error);
-    res.send("Error generating travel result");
+    res.send("Error loading holiday date page");
   }
 });
-app.post("/result",requireLogin, async (req, res) => {
+
+// app.post("/holidaydate", (req, res) => {
+//   const dob = req.body.dob;
+//    try {
+//     // your generator logic here
+//   } catch (error) {
+//     console.log(error);
+//     res.send("Error generating travel result");
+//   }
+// });
+
+app.post("/result", async (req, res) => {
   try {
     const dob = req.body.dob;
     const holidayDate = req.body.holidayDate;
@@ -368,15 +392,12 @@ app.post("/result",requireLogin, async (req, res) => {
     const zodiac = getZodiacSign(dob);
     const answer = await generateHoliday(zodiac, holidayDate);
 
-    // temporary example city until your OpenAI response becomes structured
-    //**fix the this  */
     const city = answer.city || "";
 
     const flightLink = `https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(city)}`;
     const hotelLink = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}`;
     const activityLink = `https://www.viator.com/searchResults/all?text=${encodeURIComponent(city)}`;
 
-    // save chat history only if logged in
     if (req.session && req.session.username) {
       const userMessage = `DOB: ${dob}, Holiday date: ${holidayDate}, Zodiac: ${zodiac}`;
       const botMessage = `Destination: ${answer.city}
@@ -393,12 +414,13 @@ Tip: ${answer.tip}`;
           messages: []
         });
       }
-chatSession.messages.push(
-  { sender: "user", text: userMessage },
-  { sender: "zodiac travel", text: botMessage } // was having error because sender needs to match with mode in message schema
-);
 
-         await chatSession.save();
+      chatSession.messages.push(
+        { sender: "user", text: userMessage },
+        { sender: "zodiac travel", text: botMessage }
+      );
+
+      await chatSession.save();
     }
 
     res.render("pages/mainInter/generator", {
@@ -407,11 +429,64 @@ chatSession.messages.push(
       hotelLink,
       activityLink
     });
+
   } catch (error) {
     console.error(error);
     res.status(500).send("Something went wrong");
   }
 });
+// app.post("/result", async (req, res) => {
+//   try {
+//     const dob = req.body.dob;
+//     const holidayDate = req.body.holidayDate;
+
+//     const zodiac = getZodiacSign(dob);
+//     const answer = await generateHoliday(zodiac, holidayDate);
+
+//     // temporary example city until your OpenAI response becomes structured
+//     //**fix the this  */
+//     const city = answer.city || "";
+
+//     const flightLink = `https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(city)}`;
+//     const hotelLink = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}`;
+//     const activityLink = `https://www.viator.com/searchResults/all?text=${encodeURIComponent(city)}`;
+
+//     // save chat history only if logged in
+//     if (req.session && req.session.username) {
+//       const userMessage = `DOB: ${dob}, Holiday date: ${holidayDate}, Zodiac: ${zodiac}`;
+//       const botMessage = `Destination: ${answer.city}
+// Why: ${answer.why}
+// Activities: ${answer.activities}
+// Weather: ${answer.weather}
+// Tip: ${answer.tip}`;
+
+//       let chatSession = await ChatSession.findOne({ username: req.session.username });
+
+//       if (!chatSession) {
+//         chatSession = new ChatSession({
+//           username: req.session.username,
+//           messages: []
+//         });
+//       }
+// chatSession.messages.push(
+//   { sender: "user", text: userMessage },
+//   { sender: "zodiac travel", text: botMessage } // was having error because sender needs to match with mode in message schema
+// );
+
+//          await chatSession.save();
+//     }
+
+//     res.render("pages/mainInter/generator", {
+//       answer,
+//       flightLink,
+//       hotelLink,
+//       activityLink
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Something went wrong");
+//   }
+// });
   //   res.json({
   //     zodiac,
   //     city: answer.city,
