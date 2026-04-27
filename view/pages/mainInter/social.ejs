@@ -3,35 +3,69 @@
 
 <h1>Zodiac Travel Social</h1>
 
-<h2>Create a new post</h2>
-<form action="/posts/create" method="POST" enctype="multipart/form-data">
-  <input type="text" name="caption" placeholder="Write something..." />
-  <input type="file" name="avatar" accept="image/png, image/jpeg" />
-  <button type="submit">Post</button>
-</form>
+<% if (isLoggedIn) { %>
+  <h2>Create a new post</h2>
+  <form action="/posts/create" method="POST" enctype="multipart/form-data">
+    <input type="text" name="caption" placeholder="Write something..." />
+    <input type="file" name="avatar" accept="image/png, image/jpeg" />
+    <button type="submit">Post</button>
+  </form>
+<% } else { %>
+  <p>Please <a href="/login">log in</a> to create a post.</p>
+<% } %>
 
 <hr>
 
 <h2>Recent Posts</h2>
 
-<% posts.forEach(post => { %>
+<% (posts || []).forEach(function(post) { %>
   <div>
     <h3><%= post.user %></h3>
-    <img src="<%= post.image %>" alt="post image" width="250">
+
+    <% const profileImage = post.profileImage ? post.profileImage : '/images/default-profile.png'; %>
+    <img src="<%= profileImage %>" alt="profile image" width="50" height="50">
+
+    <% if (post.image) { %>
+      <img src="<%= post.image %>" alt="post image" width="250">
+    <% } %>
+
     <p><%= post.caption %></p>
+    <p>Likes: <%= post.likes %></p>
+
+    <% if (isLoggedIn) { %>
+      <% if ((post.likedBy || []).includes(username)) { %>
+        <p>You already liked this post</p>
+      <% } else { %>
+        <form action="/likepost" method="POST">
+          <input type="hidden" name="postId" value="<%= post._id %>">
+          <button type="submit">Like</button>
+        </form>
+      <% } %>
+    <% } %>
 
     <h4>Comments</h4>
-    <% post.comments.forEach(comment => { %>
+    <% (post.comments || []).forEach(function(comment) { %>
       <p><strong><%= comment.user %>:</strong> <%= comment.text %></p>
     <% }) %>
 
-    <form action="/addcomment" method="POST">
-      <input type="hidden" name="postId" value="<%= post._id %>">
-      <input type="text" name="text" placeholder="Write a comment" required>
-      <button type="submit">Comment</button>
-    </form>
+    <% if (isLoggedIn) { %>
+      <form action="/addcomment" method="POST">
+        <input type="hidden" name="postId" value="<%= post._id %>">
+        <input type="text" name="text" placeholder="Write a comment" required>
+        <button type="submit">Comment</button>
+      </form>
+    <% } %>
   </div>
   <hr>
 <% }) %>
+
+<% if (!isLoggedIn) { %>
+  <script>
+    setTimeout(function() {
+      document.body.style.overflow = "hidden";
+      alert("Please log in to continue browsing.");
+    }, 20000);
+  </script>
+<% } %>
 
 <%- include('../../partials/footer') %>

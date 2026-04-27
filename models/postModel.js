@@ -10,20 +10,24 @@ const commentSchema = new Schema({
 const postSchema = new Schema({
   user: String,
   image: String,
+  profileImage: String,
   caption: String,
   likes: { type: Number, default: 0 },
+  likedBy: { type: [String], default: [] },
   time: { type: Date, default: Date.now },
   comments: [commentSchema]
 });
 
 const postData = model('post', postSchema);
 
-async function addPost(user, caption, image) {
+async function addPost(user, caption, image, profileImage) {
   let newPost = {
     user: user,
+    profileImage: profileImage,
     caption: caption,
     image: image,
     likes: 0,
+    likedBy: [],
     time: new Date(),
     comments: []
   };
@@ -48,8 +52,25 @@ async function getLastNPosts(n = 3) {
   return foundPosts;
 }
 
+async function likePost(postId, username) {
+  const post = await postData.findById(postId);
+
+  if (!post) return;
+
+  if (!post.likedBy) {
+    post.likedBy = [];
+  }
+
+  if (!post.likedBy.includes(username)) {
+    post.likedBy.push(username);
+    post.likes = post.likedBy.length;
+    await post.save();
+  }
+}
+
 module.exports = {
   addPost,
   addComment,
-  getLastNPosts
+  getLastNPosts,
+  likePost
 };

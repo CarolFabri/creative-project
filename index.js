@@ -149,43 +149,55 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-app.get("/", (req, res) => {
-  res.render("pages/mainInter/dataCollector");
-});
-app.get("/dataCollector", (req, res) => {
-  res.render("pages/mainInter/dataCollector");
+
+app.get("/", async (req, res) => {
+  try {
+    const allPosts = await posts.getLastNPosts(40);
+   
+
+    res.render("pages/mainInter/social", {
+      posts: allPosts || [],
+      isLoggedIn: checkLoggedInState(req),
+      username: req.session.username
+    });
+  } catch (error) {
+    console.log(error);
+    res.send("Error loading homepage");
+  }
 });
 
-app.get("/holidaydate", (req, res)=>{
+app.get("/dataCollector", requireLogin, (req, res) => {
+  res.render("pages/features/travel", {
+    username: req.session.username
+  });
+});
+
+app.get("/holidaydate", requireLogin,(req, res)=>{
   res.render("pages/mainInter/holidaydate");
 })
 
 app.get('/register', (req, res) => {
-  if (req.session.username) return res.redirect('/app');
+  if (req.session.username) return res.redirect('/');
   res.render("pages/mainInter/register");
 });
 
 app.get('/login', (req, res) => {
-  if (req.session.username) return res.redirect('/app');
+  if (req.session.username) return res.redirect('/');
   res.render("pages/mainInter/login");
 });
 
-app.get('/globe-page', requireLogin, (req, res) => {
-  res.render('pages/mainInter/globe');
+app.get("/globe-page", (req, res) => {
+  res.render("pages/MainInter/globe",{
+    loggedIn: !!req.session.username,
+    username: req.session.username || null
+  });
 });
 
 
-app.get('/profile', async (req, res) => {
 
-  // 1) Check login
-  if (!req.session.username) {
-    return res.redirect('/login');
-  }
-
-  // 2) Get user from database
+app.get('/profile', requireLogin, async (req, res) => {
   const user = await findUser(req.session.username);
 
-  // 3) Get chat history
   const chatSession = await ChatSession
     .findOne({ username: req.session.username })
     .sort({ _id: -1 });
@@ -195,38 +207,13 @@ app.get('/profile', async (req, res) => {
     messages = chatSession.messages;
   }
 
-  // 4) Render with everything profile.ejs needs
   res.render('pages/mainInter/profile', {
     user: user,
     messages: messages
   });
 });
 
-
-
-app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.render('pages/mainInter/login', );
-  }
-
-  const ok = await userModel.checkUser(username, password);
-  if (!ok) {
-    return res.render('pages/mainInter/login', );
-  }
-
-  req.session.username = username; 
-  return res.redirect('/globe-page');
-});
-
-app.post('/profile', async (req, res) => {
-
-  if (!req.session.username) {
-    return res.redirect('/login');
-  }
-  
-
+app.post('/profile', requireLogin, async (req, res) => {
   await userModel.updateProfile(
     req.session.username,
     req.body.firstname,
@@ -248,69 +235,92 @@ app.post('/profile', async (req, res) => {
     user: user,
     messages: messages
   });
-  
 });
 
-app.post('/profile/image', upload.single('avatar'), async (req, res) => {
-  try {
-    if (!req.session.username) {
-      return res.redirect('/login');
-    }
 
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.render('pages/mainInter/login');
+  }
+
+  const ok = await userModel.checkUser(username, password);
+  if (!ok) {
+    return res.render('pages/mainInter/login', );
+  }
+
+  req.session.username = username; 
+  return res.redirect('/');
+});
+
+
+
+app.post('/profile/image', requireLogin, upload.single('avatar'), async (req, res) => {
+  try {
     if (!req.file) {
       return res.send('Please select an image');
     }
 
     const imagePath = '/uploads/' + req.file.filename;
+    await userModel.updateProfileImage(req.session.username, imagePath);
 
-    await userModel.updateProfileImage(req.session.username,imagePath)
-  
     res.redirect('/profile');
   } catch (error) {
     console.log(error);
     res.send('Error uploading profile image');
   }
 });
-
 //Social media routes get and post 
-app.get('/social', async (req, res) => {
-  res.render('pages/mainInter/social', {
-    isLoggedIn: checkLoggedInState(req),
-    username: req.session.username,
-    posts: await posts.getLastNPosts(10)
-  });
+app.get('/social', (req, res) => {
+  res.redirect('/');
 });
-
 
 
 app.get('/getposts', async (req, res) => {
   res.json({ posts: await posts.getLastNPosts(10) });
 });
 
-app.post('/addcomment', async (req, res) => {
+app.post('/addcomment', requireLogin, async (req, res) => {
   await posts.addComment(
     req.body.postId,
     req.session.username,
     req.body.text
   );
 
-  res.redirect('/social');
+  res.redirect('/');
 });
 
-app.post("/posts/create", upload.single("avatar"), async (req, res) => {
+app.post("/posts/create", requireLogin, upload.single("avatar"), async (req, res) => {
   try {
     const image = req.file ? "/uploads/" + req.file.filename : "";
+    const currentUser = await findUser(req.session.username);
+    const profileImage = currentUser && currentUser.profileImage
+  ? currentUser.profileImage
+  : "/images/default-profile.png";
 
     await posts.addPost(
       req.session.username,
       req.body.caption,
-      image
+      image,
+      profileImage,
+      currentUser.profileImage || "/images/default-profile.png"
     );
 
-    res.redirect("/social");
+    res.redirect("/");
   } catch (error) {
     console.log(error);
     res.status(500).send("Error creating post");
+  }
+});
+app.post ("/likepost", requireLogin, async (req,res)=> {
+  try {
+    await posts.likePost(req.body.postId);
+    res.redirect("/");
+  } catch (error){
+    console.log(error);
+    res.status(500).send("Error liking post");
   }
 });
 
@@ -343,10 +353,14 @@ app.post('/register', async (req, res) => {
 
 app.post("/holidaydate", (req, res) => {
   const dob = req.body.dob;
-  res.render("pages/mainInter/holidaydate", { dob: dob});
+   try {
+    // your generator logic here
+  } catch (error) {
+    console.log(error);
+    res.send("Error generating travel result");
+  }
 });
-
-app.post("/result", async (req, res) => {
+app.post("/result",requireLogin, async (req, res) => {
   try {
     const dob = req.body.dob;
     const holidayDate = req.body.holidayDate;
@@ -355,7 +369,8 @@ app.post("/result", async (req, res) => {
     const answer = await generateHoliday(zodiac, holidayDate);
 
     // temporary example city until your OpenAI response becomes structured
-    const city = "Tokyo";
+    //**fix the this  */
+    const city = answer.city || "";
 
     const flightLink = `https://www.google.com/travel/flights?q=Flights%20to%20${encodeURIComponent(city)}`;
     const hotelLink = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}`;
@@ -383,7 +398,6 @@ chatSession.messages.push(
   { sender: "zodiac travel", text: botMessage } // was having error because sender needs to match with mode in message schema
 );
 
-await chatSession.save();
          await chatSession.save();
     }
 
