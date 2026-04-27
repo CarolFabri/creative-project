@@ -167,14 +167,10 @@ app.get("/", async (req, res) => {
 });
 app.get("/dataCollector", (req, res) => {
   res.render("pages/mainInter/dataCollector", {
-    errorMessage: null
+    errorMessage: null //added error message to render if user submits empty form, this is passed to the ejs file and rendered if not null 
   });
 });
-// app.get("/dataCollector", (req, res) => {
-//   res.render("pages/mainInter/dataCollector", {
 
-//   });
-// });
 
 app.get("/holidaydate",(req, res)=>{
   res.render("pages/mainInter/holidaydate");
@@ -354,7 +350,7 @@ app.post('/register', async (req, res) => {
     return res.render('pages/mainInter/registration_failed', { isLoggedIn: false });
   }
 });
-app.post("/holidaydate", (req, res) => {
+app.post("/holidaydate", (req, res) => { //removed the login requirement as it was not needed, and adding login requirement to the app post result in not loading the page 
   try {
     const dob = req.body.dob;
 
