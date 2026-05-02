@@ -1,34 +1,26 @@
-<nav class="nav">
-
- 
-  <button class="burger" aria-label="Open Menu" aria-expanded="false">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
-
+<nav class="top-nav">
+  <a href="/" class="nav-logo">Zodiac Travel</a>
 
   <ul class="menu">
-   <% if (!isLoggedIn) { %>
-  <li><a href="/login">Login</a></li>
-  <li><a href="/register">Register</a></li>
-  <li><a href="/globe-page">Globe</a></li>
-  <% } else { %>
-  <li><a href="/logout">Logout</a></li>
-  
-  <li><a href="/profile">Profile</a></li>
-  <li><a href="/social">Social</a></li>
-  <li><a href="/dataCollector">Zodiac Travel</a></li>
-  <% } %>
+    <% if (!isLoggedIn) { %>
+      <li><a href="/login"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+      <li><a href="/register"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+    <% } else { %>
+      <li><a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      <li><a href="/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
+      <li><a href="/social"><i class="fa-solid fa-users"></i> Social</a></li>
+      <li><a href="/dataCollector"><i class="fa-solid fa-plane-departure"></i> Zodiac Travel</a></li>
+    <% } %>
   </ul>
-
 </nav>
 <script>
   const burger = document.querySelector('.burger');
   const menu = document.querySelector('.menu');
 
-  burger.addEventListener('click', () => {
-    const isOpen = menu.classList.toggle('open');
-    burger.setAttribute('aria-expanded', isOpen);
-  });
+  if (burger && menu) {
+    burger.addEventListener('click', () => {
+      const isOpen = menu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', isOpen);
+    });
+  }
 </script>

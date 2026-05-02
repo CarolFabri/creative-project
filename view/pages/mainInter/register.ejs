@@ -1,6 +1,9 @@
 <%- include ('../../partials/header') %>
+<div class="page-login">
 <%- include('../../partials/nav') %>
+ <div class="auth-hero">
 <main id="loginBox">
+
   <form class="neon-form" action="/register" method="POST">
   <label for="username">Email</label>
   <input type="email" id="username" name="username" required><br>
@@ -8,8 +11,12 @@
   <label for="password">Password</label>
   <input type="password" id="password" name="password" required><br>
 
-  <button type="submit">Register</button>
+  <button class="button-res" type="submit">Register</button>
 </form>
-    
+  <% if (errorMessage) { %>
+        <p class="login-error"><%= errorMessage %></p>
+      <% } %>
 </main>
+ </div>
+</div>  
 <%- include ('../../partials/footer') %>

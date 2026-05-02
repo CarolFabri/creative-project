@@ -1,53 +1,58 @@
 <%- include('../../partials/header') %>
+
 <%- include('../../partials/nav') %>
 
-<main>
+<div class="auth-hero generator-page">
+ 
+
+  <main class="dob-page">
     <h1>Zodiac Travel</h1>
-    <p>Welcome to Zodiac Travel.....</p>
 
     <div class="container">
-        <h2>Enter your holiday date</h2>
+      <form action="/result" method="POST" id="holidayDateForm">
+        <div class="dob-panel">
+          <h2>Enter your holiday date</h2>
 
-        <form action="/result" method="POST" id="holidayDateForm">
-            <input type="hidden" name="dob" value="<%= dob %>">
+          <input type="hidden" name="dob" value="<%= dob %>">
 
-            <div class="controls">
-                <input type="date" id="holidayDate" name="holidayDate" required>
-                <button type="submit">Submit</button>
-            </div>
+          <input type="date" id="holidayDate" name="holidayDate" required>
 
-            <p id="holidayDateError"></p>
-        </form>
+          <button type="submit">Submit</button>
+
+          <p id="holidayDateError"></p>
+        </div>
+      </form>
     </div>
 
     <script>
-        const form = document.getElementById("holidayDateForm");
-        const holidayDateInput = document.getElementById("holidayDate");
-        const holidayDateError = document.getElementById("holidayDateError");
+      const form = document.getElementById("holidayDateForm");
+      const holidayDateInput = document.getElementById("holidayDate");
+      const holidayDateError = document.getElementById("holidayDateError");
 
-        form.addEventListener("submit", function (event) {
-            const holidayDateValue = holidayDateInput.value;
+      form.addEventListener("submit", function (event) {
+        const holidayDateValue = holidayDateInput.value;
 
-            if (!holidayDateValue) {
-                holidayDateError.textContent = "Please enter your holiday date.";
-                event.preventDefault();
-                return;
-            }
+        if (!holidayDateValue) {
+          holidayDateError.textContent = "Please enter your holiday date.";
+          event.preventDefault();
+          return;
+        }
 
-            const today = new Date();
-            const holidayDate = new Date(holidayDateValue);
+        const today = new Date();
+        const holidayDate = new Date(holidayDateValue);
 
-            today.setHours(0, 0, 0, 0);
-            holidayDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+        holidayDate.setHours(0, 0, 0, 0);
 
-            if (holidayDate < today) {
-                holidayDateError.textContent = "Please enter today or a future date.";
-                event.preventDefault();
-            } else {
-                holidayDateError.textContent = "";
-            }
-        });
+        if (holidayDate < today) {
+          holidayDateError.textContent = "Please enter today or a future date.";
+          event.preventDefault();
+        } else {
+          holidayDateError.textContent = "";
+        }
+      });
     </script>
-</main>
+  </main>
+</div>
 
 <%- include('../../partials/footer') %>

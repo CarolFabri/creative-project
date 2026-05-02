@@ -1,72 +1,169 @@
 <%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
 
-<h1>Zodiac Travel Social</h1>
+<div class="posts-section">
 
-<% if (isLoggedIn) { %>
-  <h2>Create a new post</h2>
-  <form action="/posts/create" method="POST" enctype="multipart/form-data">
-    <input type="text" name="caption" placeholder="Write something..." />
-    <input type="file" name="avatar" accept="image/png, image/jpeg" />
-    <button type="submit">Post</button>
-  </form>
-<% } else { %>
-  <p>Please <a href="/login">log in</a> to create a post.</p>
-<% } %>
+  <div class="posts-content-layout">
 
-<hr>
+    <!-- LEFT SIDE: HOROSCOPE -->
+    <div class="posts-left-side">
+      <% if (isLoggedIn) { %>
+     <section class="daily-horoscope-card">
+       <h3>Hello <%= username %></h3>
+  <% if (message) { %>
+    <h3>Hello ${username}</h3>
+  <% } %>
 
-<h2>Recent Posts</h2>
+  <% if (horoscope) { %>
+    <%
+      let zodiacIcon = "";
 
-<% (posts || []).forEach(function(post) { %>
-  <div>
-    <h3><%= post.user %></h3>
+      if (zodiac === "Aries") {
+        zodiacIcon = "/images/zodiac/Aries.png";
+      } else if (zodiac === "Taurus") {
+        zodiacIcon = "/images/zodiac/Taurus.png";
+      } else if (zodiac === "Gemini") {
+        zodiacIcon = "/images/zodiac/Gemini.png";
+      } else if (zodiac === "Cancer") {
+        zodiacIcon = "/images/zodiac/cancer.png";
+      } else if (zodiac === "Leo") {
+        zodiacIcon = "/images/zodiac/leo.png";
+      } else if (zodiac === "Virgo") {
+        zodiacIcon = "/images/zodiac/virgo.png";
+      } else if (zodiac === "Libra") {
+        zodiacIcon = "/images/zodiac/libra.png";
+      } else if (zodiac === "Scorpio") {
+        zodiacIcon = "/images/zodiac/scorpio.png";
+      } else if (zodiac === "Sagittarius") {
+        zodiacIcon = "/images/zodiac/sagittarius.png";
+      } else if (zodiac === "Capricorn") {
+        zodiacIcon = "/images/zodiac/capricorn.png";
+      } else if (zodiac === "Aquarius") {
+        zodiacIcon = "/images/zodiac/aquarius.png";
+      } else if (zodiac === "Pisces") {
+        zodiacIcon = "/images/zodiac/pisces.png";
+      }
+    %>
 
-    <% const profileImage = post.profileImage ? post.profileImage : '/images/default-profile.png'; %>
-    <img src="<%= profileImage %>" alt="profile image" width="50" height="50">
-
-    <% if (post.image) { %>
-      <img src="<%= post.image %>" alt="post image" width="250">
+    <% if (zodiacIcon) { %>
+      <img class="zodiac-icon" src="<%= zodiacIcon %>" alt="<%= zodiac %> icon">
     <% } %>
 
-    <p><%= post.caption %></p>
-    <p>Likes: <%= post.likes %></p>
+    <h3><%= zodiac %> Travel Horoscope</h3>
 
-    <% if (isLoggedIn) { %>
-      <% if ((post.likedBy || []).includes(username)) { %>
-        <p>You already liked this post</p>
-      <% } else { %>
-        <form action="/likepost" method="POST">
-          <input type="hidden" name="postId" value="<%= post._id %>">
-          <button type="submit">Like</button>
-        </form>
+    <p><strong>Today’s energy:</strong> <%= horoscope.energy %></p>
+    <p><strong>Best city for today:</strong> <%= horoscope.city %></p>
+    <p><strong>Why this place matches your day:</strong> <%= horoscope.why %></p>
+    <p><strong>Travel advice:</strong> <%= horoscope.advice %></p>
+  <% } %>
+</section>
+        </section>
       <% } %>
-    <% } %>
+    </div>
 
-    <h4>Comments</h4>
-    <% (post.comments || []).forEach(function(comment) { %>
-      <p><strong><%= comment.user %>:</strong> <%= comment.text %></p>
-    <% }) %>
+    <!-- RIGHT SIDE: CREATE POST + RECENT POSTS -->
+    <div class="posts-right-side">
 
-    <% if (isLoggedIn) { %>
-      <form action="/addcomment" method="POST">
-        <input type="hidden" name="postId" value="<%= post._id %>">
-        <input type="text" name="text" placeholder="Write a comment" required>
-        <button type="submit">Comment</button>
-      </form>
-    <% } %>
+      <% if (isLoggedIn) { %>
+        <div class="create-post-wrapper">
+          <h2>Create a new post</h2>
+
+          <form class="create-post-form" action="/posts/create" method="POST" enctype="multipart/form-data">
+            <div class="create-post-card">
+              <textarea 
+                name="caption" 
+                class="caption-input" 
+                placeholder="Write something..."
+                required
+              ></textarea>
+
+              <input 
+                type="file" 
+                id="avatar" 
+                name="avatar" 
+                accept="image/png, image/jpeg"
+                hidden
+              >
+
+              <label for="avatar" class="upload-btn">Upload</label>
+               <button class="post-submit-btn" type="submit">Post</button>
+            </div>
+
+          </form>
+        </div>
+      <% } else { %>
+        <div class="create-post-wrapper">
+          <p>Please <a href="/login">log in</a> to create a post.</p>
+        </div>
+      <% } %>
+
+      <h2>Recent Posts</h2>
+
+      <% (posts || []).forEach(function(post) { %>
+        <div class="post-card">
+
+          <% const profileImage = post.profileImage ? post.profileImage : '/images/default-profile.png'; %>
+
+          <div class="post-header">
+            <img class="profile-icon" src="<%= profileImage %>" alt="profile image">
+            <h3><%= post.user %></h3>
+          </div>
+
+          <% if (post.image) { %>
+            <img class="post-image" src="<%= post.image %>" alt="post image">
+          <% } %>
+
+          <div class="likes-row">
+            <% if (isLoggedIn) { %>
+              <% if ((post.likedBy || []).includes(username)) { %>
+                <span class="liked-heart">♥</span>
+              <% } else { %>
+                <form class="like-form" action="/likepost" method="POST">
+                  <input type="hidden" name="postId" value="<%= post._id %>">
+                  <button class="heart-button" type="submit">♡</button>
+                </form>
+              <% } %>
+            <% } else { %>
+              <span class="heart-disabled">♡</span>
+            <% } %>
+
+            <span class="likes-count"><%= post.likes %></span>
+          </div>
+
+          <p class="post-caption"><%= post.caption %></p>
+
+          <div class="comments-box">
+            <h4>Comments</h4>
+
+            <% (post.comments || []).forEach(function(comment) { %>
+              <p class="comments">
+                <strong><%= comment.user %>:</strong> <%= comment.text %>
+              </p>
+            <% }) %>
+
+            <% if (isLoggedIn) { %>
+              <form class="comment-form" action="/addcomment" method="POST">
+                <input type="hidden" name="postId" value="<%= post._id %>">
+                <input type="text" name="text" placeholder="Write a comment" required>
+                <button type="submit">Comment</button>
+              </form>
+            <% } %>
+          </div>
+
+        </div>
+      <% }) %>
+
+    </div>
+
   </div>
-  <hr>
-<% }) %>
 
-<% if (!isLoggedIn) { %>
-  <script>
-    setTimeout(function() {
-      document.body.style.overflow = "hidden";
-      alert("Please log in to continue browsing.");
-        window.location.href= "/login";
-    }, 20000);
-  </script>
-<% } %>
+</div>
 
 <%- include('../../partials/footer') %>
+<% if (!isLoggedIn) { %>
+  <script>
+    setTimeout(function () {
+      window.location.href = "/login";
+    }, 30000);
+  </script>
+<% } %>

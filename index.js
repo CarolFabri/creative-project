@@ -9,6 +9,7 @@ const { getZodiacSign } = require("./utils/zodiacsign");
 const ChatSession = require('./models/chatSession');
 const userModel = require('./models/userModel');
 const posts = require('./models/postModel');
+const horoscopeModel = require('./models/horoscopeModel');
 app.use(express.static(path.join(__dirname, "public")));
 // enable JSON parsing
 app.use(express.json());
@@ -148,52 +149,79 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
+app.get("/holidaydate", (req, res) => {
+  res.redirect("/dataCollector");
+});
 
 app.get("/", async (req, res) => {
   try {
     const allPosts = await posts.getLastNPosts(40);
-   
+
+    let horoscope = null;
+    let zodiac = null;
+    let message = null;
+
+    if (req.session && req.session.username) {
+      const user = await findUser(req.session.username);
+
+      if (!user || !user.dob) {
+        message = "Please add your date of birth in your profile first.";
+      } else {
+        zodiac = getZodiacSign(user.dob);
+
+        horoscope = await horoscopeModel.getRandomHoroscope(zodiac);
+
+        if (!horoscope) {
+          message = "No horoscope option has been added for your zodiac sign yet.";
+        }
+      }
+    } else {
+      message = null;
+    }
 
     res.render("pages/mainInter/social", {
       posts: allPosts || [],
       isLoggedIn: checkLoggedInState(req),
-      username: req.session.username
+      username: req.session?.username || null,
+      bodyClass: "social-page",
+      horoscope: horoscope,
+      zodiac: zodiac,
+      message: message
     });
+
   } catch (error) {
     console.log(error);
     res.send("Error loading homepage");
   }
 });
+
 app.get("/dataCollector", (req, res) => {
   res.render("pages/mainInter/dataCollector", {
     errorMessage: null //added error message to render if user submits empty form, this is passed to the ejs file and rendered if not null 
   });
 });
 
-
-app.get("/holidaydate",(req, res)=>{
-  res.render("pages/mainInter/holidaydate");
-})
+app.get("/result", (req, res) => {
+  res.redirect("/dataCollector");
+});
 
 app.get('/register', (req, res) => {
-  if (req.session.username) return res.redirect('/');
-  res.render("pages/mainInter/register");
+  res.render('pages/mainInter/register', {
+    isLoggedIn: !!req.session.username,
+    username: req.session.username || null,
+    errorMessage: null
+  });
 });
 
 app.get('/login', (req, res) => {
   if (req.session.username) return res.redirect('/');
-  res.render("pages/mainInter/login");
-});
 
-app.get("/globe-page", (req, res) => {
-  res.render("pages/MainInter/globe",{
-    loggedIn: !!req.session.username,
-    username: req.session.username || null
+  res.render('pages/mainInter/login', {
+    isLoggedIn: false,
+    username: null,
+    errorMessage: null
   });
 });
-
-
 
 app.get('/profile', requireLogin, async (req, res) => {
   const user = await findUser(req.session.username);
@@ -211,6 +239,25 @@ app.get('/profile', requireLogin, async (req, res) => {
     user: user,
     messages: messages
   });
+});
+
+
+
+app.post("/profile/dob", requireLogin, async (req, res) => {
+  try {
+    const { dob } = req.body;
+
+    if (!dob) {
+      return res.redirect("/profile");
+    }
+
+    await userModel.updateDob(req.session.username, new Date(dob));
+
+    res.redirect("/profile");
+  } catch (error) {
+    console.log(error);
+    res.redirect("/profile");
+  }
 });
 
 app.post('/profile', requireLogin, async (req, res) => {
@@ -242,17 +289,18 @@ app.post('/profile', requireLogin, async (req, res) => {
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  if (!username || !password) {
-    return res.render('pages/mainInter/login');
-  }
-
   const ok = await userModel.checkUser(username, password);
-  if (!ok) {
-    return res.render('pages/mainInter/login', );
+
+  if (ok) {
+    req.session.username = username;
+    return res.redirect('/');
   }
 
-  req.session.username = username; 
-  return res.redirect('/');
+  return res.render('pages/mainInter/login', {
+    isLoggedIn: false,
+    username: null,
+    errorMessage: 'Email or password is incorrect. Try again.'
+  });
 });
 
 
@@ -276,6 +324,7 @@ app.post('/profile/image', requireLogin, upload.single('avatar'), async (req, re
 app.get('/social', (req, res) => {
   res.redirect('/');
 });
+
 
 
 app.get('/getposts', async (req, res) => {
@@ -347,11 +396,16 @@ app.post('/register', async (req, res) => {
   if (ok) {
     return res.render('pages/mainInter/login',);
   } else {
-    return res.render('pages/mainInter/registration_failed', { isLoggedIn: false });
+    return res.render('pages/mainInter/register', {
+      errorMessage: 'Registration failed. Try again.',
+      isLoggedIn: false
+    });
   }
 });
+
 app.post("/holidaydate", (req, res) => { //removed the login requirement as it was not needed, and adding login requirement to the app post result in not loading the page 
   try {
+    
     const dob = req.body.dob;
 
     if (!dob) {
@@ -417,6 +471,7 @@ Tip: ${answer.tip}`;
       );
 
       await chatSession.save();
+      
     }
 
     res.render("pages/mainInter/generator", {

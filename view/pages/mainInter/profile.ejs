@@ -1,34 +1,59 @@
 <%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
  <div class="auth-hero page-login">
+  
        <main id="loginBox" class="profile">
         <div class="profile-section">
-  <h2><%= user.username %></h2>
 
-  <% if (user.profileImage) { %>
-    <img src="<%= user.profileImage %>" alt="profile image" width="150">
-  <% } else { %>
-    <p>No profile image yet.</p>
-  <% } %>
+  <h2>Profile for: <br><%= user.username %></h2>
+ <form action = "profile/dob/" method="post" class="neon-form">
+    <label for = "dob" >Date of Birth:</label>
+    <input type = "date"
+    id="dob"
+    name="dob"
+    value="<%= user.dob ? user.dob.toISOString().split('T')[0] : '' %>"
+    required
+    >
+    <button type="submit" class="button-res">Save Date of Birth</button>
+  
+    <p>Your Date of Birth: <%= user.dob? user.dob.toLocaleDateString("en-GB"): "Not set yet" %></p>
+ </form>
 
-  <form class="profile-img" action="/profile/image" method="POST" enctype="multipart/form-data">
-    <input type="file" name="avatar" accept="image/png, image/jpeg">
-    <input class="button-res profile" type="submit" value="Upload Profile Picture">
-  </form>
+  <div class="profile-upload-row">
+    <% if (user.profileImage) { %>
+      <img class="profile-main-img" src="<%= user.profileImage %>" alt="profile image">
+    <% } else { %>
+      <p>No profile image yet.</p>
+    <% } %>
+
+    <form class="profile-img" action="/profile/image" method="POST" enctype="multipart/form-data">
+      <input 
+        type="file" 
+        id="profileUpload" 
+        name="avatar" 
+        accept="image/png, image/jpeg"
+        hidden
+      >
+
+      <label for="profileUpload" class="custom-file-btn">Choose File</label>
+
+      <input class="button-res profile" type="submit" value="Upload Profile Picture">
+    </form>
+  </div>
 </div>
 
           <section class="chat-history">
 <h2 class="profileTitle">My Chat History</h2>
 
 <% if (messages && messages.length > 0) { %>
-  <% messages.forEach(msg => { %>
+  <% [...messages].reverse().forEach(msg => { %>
     <% if (msg.sender === "user") { %>
       <div class="history">
-        <p><strong>You:</strong> <%= msg.text %></p>
+        <p class="history-card user-history"><strong>You:</strong> <%= msg.text %></p>
       </div>
     <% } else { %>
       <div class="history">
-        <p><strong>Generator:</strong> <%= msg.text %></p>
+         <p class="history-card generator-history"><strong>Generator:</strong> <%= msg.text %></p>
       </div>
     <% } %>
   <% }) %>

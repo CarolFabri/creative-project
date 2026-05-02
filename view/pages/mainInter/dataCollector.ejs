@@ -1,25 +1,24 @@
 <%- include('../../partials/header') %>
-<%- include('../../partials/nav') %>
 
-<main>
-  <h1>Zodiac Travel</h1>
-  <p>Welcome to Zodiac Travel.....</p>
+  <%- include('../../partials/nav') %>
 
-  <div class="container">
-    <h2>Please enter your Date of Birth</h2>
+<div class="auth-hero generator-page">
+  <main class="dob-page">
+    <h1>Zodiac Travel</h1>
+    <div class="container">
+      <% if (typeof errorMessage !== "undefined" && errorMessage) { %>
+        <p class="error-message"><%= errorMessage %></p>
+      <% } %>
 
-    <% if (typeof errorMessage !== "undefined" && errorMessage) { %>
-      <p><%= errorMessage %></p>
-    <% } %>
-
-    <form action="/holidaydate" method="POST" id="dobForm">
-      <div class="controls">
-        <input type="date" id="dob" name="dob" required>
-        <button type="submit">Submit</button>
-      </div>
-      <p id="dobError"></p>
-    </form>
-  </div>
+      <form action="/holidaydate" method="POST" id="dobForm">
+        <div class="dob-panel">
+          <h2>Please enter your Date of Birth</h2>
+          <input type="date" id="dob" name="dob" required>
+          <button type="submit">Submit</button>
+          <p id="dobError"></p>
+        </div>
+      </form>
+    </div>
 
   <script>
     const form = document.getElementById("dobForm");
@@ -58,6 +57,7 @@
     });
   </script>
 </main>
+</div>
 
 
 <%- include('../../partials/footer') %>

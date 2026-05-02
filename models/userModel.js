@@ -7,8 +7,11 @@ const userSchema = new Schema({
   profileImage: {
     type:String,
     default:''
-  }
-})
+  },
+    dob: {
+    type: Date,
+    },
+});
 
 const userData = model('users', userSchema)
 
@@ -70,6 +73,13 @@ async function updateProfileImage(username,profileImage){
     {new: true}
   );
 }
+  async function updateDob(username,dob){
+    return userData.updateOne (
+      {username: username},
+      {$set: {dob: dob}},
+    );
+  }
+
 module.exports = {
   addUser,
   checkUser,
@@ -78,5 +88,6 @@ module.exports = {
   updateProfileImage,
   findUserbyUsername,
   getAllUsersWithoutPasswords,
-  deleteUserById
+  deleteUserById,
+  updateDob
 };

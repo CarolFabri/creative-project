@@ -1,25 +1,28 @@
 <%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
+<div class="auth-hero generator-page">
+  
 
-<h1>Your Zodiac Holiday</h1>
+  <main class="dob-page result-page">
+    <div class="result-panel">
+      <h1>Your Zodiac Holiday</h1>
 
-<p><strong>Destination:</strong> <%= answer.city %></p>
-<p><strong>Why it matches this zodiac:</strong> <%= answer.why %></p>
-<p><strong>Best activities:</strong> <%= answer.activities %></p>
-<p><strong>Weather:</strong> <%= answer.weather %></p>
-<p><strong>Travel tip:</strong> <%= answer.tip %></p>
+      <p><strong>Destination:</strong> <%= answer.city %></p>
+      <p><strong>Why it matches this zodiac:</strong> <%= answer.why %></p>
+      <p><strong>Best activities:</strong> <%= answer.activities %></p>
+      <p><strong>Weather:</strong> <%= answer.weather %></p>
+      <p><strong>Travel tip:</strong> <%= answer.tip %></p>
 
-<a href="<%= flightLink %>" target="_blank">Flights</a>
-<a href="<%= hotelLink %>" target="_blank">Hotels</a>
-<a href="<%= activityLink %>" target="_blank">Activities</a>
+      <div class="travel-links">
+        <a href="<%= flightLink %>" target="_blank">Flights</a>
+        <a href="<%= hotelLink %>" target="_blank">Hotels</a>
+        <a href="<%= activityLink %>" target="_blank">Activities</a>
+        <p>You can view your travel generator history in your profile.</p>
+      </div>
+    </div>
 
-
-
-<% if (!isLoggedIn) { %>
-<p>Want more features? Please sign up.</p>
-<a href="/register" class="register-btn">Click Here to Register</a>
-<% } else { %>
-  <p>You can view your travel generator history in your profile.</p>
-<% } %>
+ 
+  </main>
+</div>
 
 <%- include('../../partials/footer') %>
