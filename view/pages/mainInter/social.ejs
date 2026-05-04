@@ -9,12 +9,7 @@
     <div class="posts-left-side">
       <% if (isLoggedIn) { %>
      <section class="daily-horoscope-card">
-       <h3>Hello <%= username %></h3>
-  <% if (message) { %>
-    <h3>Hello ${username}</h3>
-  <% } %>
-
-  <% if (horoscope) { %>
+              <% if (horoscope) { %>
     <%
       let zodiacIcon = "";
 
@@ -45,9 +40,14 @@
       }
     %>
 
+      <div class="horoscope-user-row">
     <% if (zodiacIcon) { %>
-      <img class="zodiac-icon" src="<%= zodiacIcon %>" alt="<%= zodiac %> icon">
+      <img class="zodiac-icon-small" src="<%= zodiacIcon %>" alt="<%= zodiac %> icon">
     <% } %>
+
+    <h3>Hello <%= usernameProfi || username %></h3>
+  </div>
+   
 
     <h3><%= zodiac %> Travel Horoscope</h3>
 
@@ -56,7 +56,7 @@
     <p><strong>Why this place matches your day:</strong> <%= horoscope.why %></p>
     <p><strong>Travel advice:</strong> <%= horoscope.advice %></p>
   <% } %>
-</section>
+
         </section>
       <% } %>
     </div>
@@ -85,8 +85,9 @@
                 hidden
               >
 
-              <label for="avatar" class="upload-btn">Upload</label>
-               <button class="post-submit-btn" type="submit">Post</button>
+              <div class="post-actions">
+                <label for="avatar" class="upload-btn">Upload</label>
+                <button class="post-submit-btn" type="submit">Post</button></div>
             </div>
 
           </form>

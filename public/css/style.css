@@ -84,7 +84,7 @@ h2 {
 .daily-horoscope-card {
     width: 80%;
     padding: 10px 24px;
-    margin-top: 100px;
+    margin-top: 60px;
     background: #a38bc5ad;
     border-radius: 15px;
     box-sizing: border-box;
@@ -99,6 +99,27 @@ h2 {
   object-fit: contain;
   display: block;
   margin-bottom: 10px;
+  border-radius: 30px;
+}
+.horoscope-user-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 14px;
+}
+
+.horoscope-user-row h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.zodiac-icon-small {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(190, 70, 255, 0.45);
 }
 .social-page {
   background-image: url("/images/background/backgroundOne.png");
@@ -145,7 +166,16 @@ button {
   background: white;
   cursor: pointer;
 }
+  .post-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
 
+  .upload-btn,
+  .post-submit-btn {
+    width: 100%;
+    max-width: 220px;
+  }
 button:hover {
   background: #111;
   color: white;
@@ -157,6 +187,7 @@ button:hover {
 .post-card {
     width: 700px;
     padding: 14px;
+    margin-bottom: 10px;
     border-radius: 18px;
     box-sizing: border-box;
     background: rgba(255, 255, 255, 0.18);
@@ -530,6 +561,12 @@ hr {
     width: 100%;
     max-width: none;
   }
+    .upload-btn {
+    width: 130px;
+    padding: 8px 16px;
+    text-align: center;
+    box-sizing: border-box;
+  }
 
   .post-card {
     padding: 12px;
@@ -554,7 +591,79 @@ hr {
   .comment-form button {
     width: 100%;
   }
+  /* Main layout: stack columns on mobile */
+  .posts-section {
+    padding: 20px 14px;
+  }
+  .post-submit-btn{
+    margin-top: 50px;
+  }
+
+  .posts-content-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .posts-left-side,
+  .posts-right-side {
+    width: 100%;
+  }
+
+  /* Horoscope card only */
+  .daily-horoscope-card {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .horoscope-user-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .horoscope-user-row h3 {
+    font-size: 1.6rem;
+    margin: 0;
+  }
+
+  .zodiac-icon-small,
+  .zodiac-icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .daily-horoscope-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .daily-horoscope-card p {
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  /* Navbar mobile */
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    padding: 12px 10px;
+  }
+
+  nav ul li {
+    margin: 0;
+  }
+
+  nav ul li a {
+    font-size: 0.95rem;
+  }
 }
+
 
 /* Mobile phone wireframe feel */
 @media (max-width: 600px) {
@@ -765,6 +874,223 @@ hr {
 }
 
 /*Profile*/
+/* PROFILE MAIN BOX TEXT STYLE */
+.profile-section {
+  color: #24162f;
+}
+
+/* Main title: "Profile for: carol12" */
+.profile-section h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 28px;
+  color: #1f1027;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.5px;
+}
+
+/* Optional: style the username inside title differently if wrapped in span */
+.profile-section h2 span {
+  display: inline-block;
+  color: #6d2ca8;
+  text-shadow: 0 0 12px rgba(201, 85, 255, 0.45);
+}
+
+/* Labels like "Date of Birth:" */
+.profile-section label {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2b1238;
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+}
+
+/* Paragraphs inside profile */
+.profile-section p {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #2c1835;
+}
+
+/* Date of birth display text */
+.profile-section .dob-text,
+.profile-section .profile-info-text {
+  margin-top: 18px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 14px rgba(196, 104, 255, 0.12);
+  font-size: 1.08rem;
+}
+
+/* Strong text inside the info box */
+.profile-section .dob-text strong,
+.profile-section .profile-info-text strong {
+  color: #6e28a9;
+  font-weight: 800;
+}
+
+/* Empty states like "No profile image yet" / "No chat history yet" */
+.profile-upload-row p,
+.chat-history > p {
+  font-size: 1rem;
+  color: #5d3a73;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 12px rgba(200, 90, 255, 0.1);
+}
+.dob-box {
+  width: 100%;
+  max-width: 680px;
+  margin: 30px auto;
+  padding: 32px;
+  border-radius: 28px;
+  background: rgba(190, 150, 220, 0.32);
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 0 25px rgba(190, 80, 255, 0.22),
+    inset 0 0 25px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.dob-box label {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #2b1238;
+}
+
+.dob-box .dob-input {
+  margin-bottom: 24px;
+}
+
+.dob-box .button-res {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Chat history title */
+.profileTitle,
+.chat-history h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 26px;
+  margin-bottom: 24px;
+  color: #1e1027;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.5px;
+}
+
+/* Chat history cards */
+.history-card {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #26152f;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: 0 0 16px rgba(200, 90, 255, 0.14);
+}
+
+/* User/generator emphasis */
+.history-card strong {
+  color: #7a26c1;
+  font-weight: 800;
+}
+
+/* Input text style */
+.profile-section input[type="date"] {
+  font-size: 1rem;
+  color: #2a1733;
+}
+
+/* Make buttons feel more premium with text style */
+.button-res,
+.custom-file-btn {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.12);
+}
+.dob-form {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.dob-form label {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #2b1238;
+  letter-spacing: 0.3px;
+  margin-bottom: 12px;
+}
+
+/* Date input */
+.dob-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.35);
+  color: #281333;
+  font-size: 1rem;
+  font-weight: 600;
+  outline: none;
+  box-sizing: border-box;
+  box-shadow:
+    0 0 18px rgba(202, 98, 255, 0.22),
+    inset 0 0 12px rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  margin-bottom: 22px;
+}
+
+.dob-input:focus {
+  border-color: rgba(190, 88, 255, 0.9);
+  box-shadow:
+    0 0 22px rgba(190, 88, 255, 0.45),
+    inset 0 0 14px rgba(255, 255, 255, 0.3);
+}
+
+/* Calendar icon */
+.dob-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(18%) sepia(45%) saturate(950%) hue-rotate(250deg);
+}
+
+/* Displayed DOB */
+.dob-display {
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #2b1238;
+  font-size: 1.08rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow:
+    0 0 18px rgba(202, 98, 255, 0.18),
+    inset 0 0 16px rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+}
+
+.dob-display span {
+  color: #7b2fb3;
+  font-weight: 900;
+  text-shadow: 0 0 10px rgba(211, 116, 255, 0.35);
+}
+
 .auth-hero.page-login {
   position: relative;
   min-height: 100vh;
@@ -985,21 +1311,23 @@ hr {
 
 .travel-links a,
 .register-btn {
-  padding: 12px 20px;
-  border-radius: 14px;
-  text-decoration: none;
-  color: white;
-  font-weight: 700;
-
-  background: linear-gradient(
-    135deg,
-    rgba(160, 92, 195, 0.85),
-    rgba(205, 130, 230, 0.75),
-    rgba(125, 80, 180, 0.85)
-  );
-
-  box-shadow: 0 0 20px rgba(172, 45, 206, 0.75);
+    min-width: 140px;
+    height: 56px;
+    padding: 0 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #8932c8, rgba(183, 118, 230, 0.8));
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.85), inset 0 0 10px rgba(255, 255, 255, 0.12);
+    transition: 0.2s ease;
 }
+
 
 
 /*Data Collector Page*/
@@ -1254,6 +1582,15 @@ hr {
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
   }
+  
+  .result-panel {
+    width: 100%;
+    max-width: 340px;
+    margin: 20px auto;
+    padding: 30px 24px;
+    box-sizing: border-box;
+  }
+
 
   .result-panel h1 {
     font-size: 2rem;
@@ -1279,7 +1616,6 @@ hr {
   .travel-links a,
   .register-btn {
     width: 100%;
-    max-width: 260px;
     height: 50px;
     font-size: 0.95rem;
   }
@@ -1322,15 +1658,13 @@ hr {
 
   .dob-panel {
     width: 100%;
-    max-width: 320px;
     padding: 26px 18px;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 14px;
-
     border-radius: 24px;
+    margin: 0 auto;
   }
 
   .dob-panel h2 {
@@ -1363,21 +1697,45 @@ hr {
   }
 }
 @media (max-width: 700px) {
+  @media (max-width: 700px) {
   .top-nav {
-    height: auto;
-    padding: 8px 18px;
+    display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 14px 10px 24px;
+    min-height: auto;
+    height: auto;
+    overflow: visible;
+  }
+
+  .nav-logo {
+    text-align: center;
+    margin: 0;
+    font-size: 1rem;
+    white-space: nowrap;
   }
 
   .menu {
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
+    gap: 18px 28px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .menu li {
+    margin: 0;
   }
 
   .menu a {
-    height: 28px;
-    padding: 0 8px;
-    font-size: 0.68rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
   }
+}
 }

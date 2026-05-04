@@ -163,6 +163,9 @@ app.get("/", async (req, res) => {
 
     if (req.session && req.session.username) {
       const user = await findUser(req.session.username);
+      if (user) {
+        usernameProfi = user.usernameProfi || user.username;
+      }
 
       if (!user || !user.dob) {
         message = "Please add your date of birth in your profile first.";
@@ -332,9 +335,12 @@ app.get('/getposts', async (req, res) => {
 });
 
 app.post('/addcomment', requireLogin, async (req, res) => {
+  const currentUser = await findUser(req.session.username);
+  const displayName = currentUser.usernameProfi || currentUser.username;
+
   await posts.addComment(
     req.body.postId,
-    req.session.username,
+    displayName,
     req.body.text
   );
 
@@ -345,9 +351,10 @@ app.post("/posts/create", requireLogin, upload.single("avatar"), async (req, res
   try {
     const image = req.file ? "/uploads/" + req.file.filename : "";
     const currentUser = await findUser(req.session.username);
+    const displayName = currentUser.usernameProfi || currentUser.username; // use usernameProfi, to only display the profile name not their email
     const profileImage = currentUser && currentUser.profileImage
-  ? currentUser.profileImage
-  : "/images/default-profile.png";
+      ? currentUser.profileImage
+      : "/images/default-profile.png";
 
     await posts.addPost(
       req.session.username,
@@ -382,7 +389,7 @@ app.get('/logout', (req, res) => {
   
 });
 app.post('/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password,usernameProfi } = req.body;
 
   if (!username || !password ) {
     return res.render('pages/mainInter/register', {
@@ -391,7 +398,7 @@ app.post('/register', async (req, res) => {
     });
   }
 
-  const ok = await userModel.addUser(username, password);
+  const ok = await userModel.addUser(username, password, usernameProfi);
 
   if (ok) {
     return res.render('pages/mainInter/login',);

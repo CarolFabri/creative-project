@@ -4,6 +4,7 @@ const { Schema, model } = mongoose;
 const userSchema = new Schema({
   username: String,
   password: String,
+  usernameProfi: String,
   profileImage: {
     type:String,
     default:''
@@ -15,22 +16,32 @@ const userSchema = new Schema({
 
 const userData = model('users', userSchema)
 
-async function addUser(usernameFromForm, password, firstnameFromForm, lastnameFromForm) {
-  // let found = userData.find(thisUser => thisUser.username == usernmae);
-  let found = null;
-  found = await userData.findOne({ username: usernameFromForm})
-  if (found) {
+async function addUser(usernameFromForm, password, usernameProfiFromForm) {
+  const foundEmail = await userData.findOne({ 
+    username: usernameFromForm 
+  });
+
+  if (foundEmail) {
     return false;
-  } else {
-    let newUser = {
-      username: usernameFromForm,
-      password: password,
-    }
-    await userData.create(newUser);
-    return true;
   }
-  //userData.push(newUser);
-}
+
+  const foundProfileUsername = await userData.findOne({ 
+    usernameProfi: usernameProfiFromForm 
+  });
+
+  if (foundProfileUsername) {
+    return false;
+  }
+
+  const newUser = {
+    username: usernameFromForm, // email
+    password: password,
+    usernameProfi: usernameProfiFromForm
+  };
+
+  await userData.create(newUser);
+  return true;
+} // updated to add the usernameProfi to the database and check if the usernameProfi is already taken, if it is return false, if not create the user with the userNameProfi and return true 
 
 
 async function checkUser(usernameFromForm, password) {
@@ -42,6 +53,10 @@ async function checkUser(usernameFromForm, password) {
   } else {
     return false;
   }
+}
+
+async function findUserByProfileUsername(usernameProfi) {
+  return userData.findOne({ usernameProfi: usernameProfi });
 }
 
 async function findUser(username) {
