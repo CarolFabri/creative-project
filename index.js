@@ -10,6 +10,7 @@ const ChatSession = require('./models/chatSession');
 const userModel = require('./models/userModel');
 const posts = require('./models/postModel');
 const horoscopeModel = require('./models/horoscopeModel');
+const notificationModel = require('./models/notificationModel');
 app.use(express.static(path.join(__dirname, "public")));
 // enable JSON parsing
 app.use(express.json());
@@ -160,12 +161,18 @@ app.get("/", async (req, res) => {
     let horoscope = null;
     let zodiac = null;
     let message = null;
+    let usernameProfi = null;
+    let notifications = [];
 
     if (req.session && req.session.username) {
       const user = await findUser(req.session.username);
       if (user) {
         usernameProfi = user.usernameProfi || user.username;
       }
+      
+      notifications = await notificationModel.find({
+      userToNotify: req.session.username,
+      read: false }).sort({ createAt: -1});
 
       if (!user || !user.dob) {
         message = "Please add your date of birth in your profile first.";
@@ -184,8 +191,10 @@ app.get("/", async (req, res) => {
 
     res.render("pages/mainInter/social", {
       posts: allPosts || [],
+      notifications: notifications,
       isLoggedIn: checkLoggedInState(req),
       username: req.session?.username || null,
+      usernameProfi: usernameProfi,
       bodyClass: "social-page",
       horoscope: horoscope,
       zodiac: zodiac,
@@ -334,18 +343,7 @@ app.get('/getposts', async (req, res) => {
   res.json({ posts: await posts.getLastNPosts(10) });
 });
 
-app.post('/addcomment', requireLogin, async (req, res) => {
-  const currentUser = await findUser(req.session.username);
-  const displayName = currentUser.usernameProfi || currentUser.username;
 
-  await posts.addComment(
-    req.body.postId,
-    displayName,
-    req.body.text
-  );
-
-  res.redirect('/');
-});
 
 app.post("/posts/create", requireLogin, upload.single("avatar"), async (req, res) => {
   try {
@@ -370,13 +368,83 @@ app.post("/posts/create", requireLogin, upload.single("avatar"), async (req, res
     res.status(500).send("Error creating post");
   }
 });
-app.post ("/likepost", requireLogin, async (req,res)=> {
+
+
+app.post("/likepost", requireLogin, async (req, res) => {
   try {
-    await posts.likePost(req.body.postId);
+    const postId = req.body.postId;
+    const currentUsername = req.session.username;
+
+    const currentUser = await findUser(currentUsername);
+    const displayName = currentUser.usernameProfi || currentUser.username;
+
+    const post = await posts.getPostById(postId);
+
+    if (!post) {
+      return res.redirect("/");
+    }
+
+    const alreadyLiked = post.likedBy && post.likedBy.includes(currentUsername);
+
+    await posts.likePost(postId, currentUsername);
+
+    if (!alreadyLiked && post.user !== currentUsername) {
+      await notificationModel.create({
+        userToNotify: post.user,
+        fromUser: displayName,
+        type: "like",
+        postId: post._id,
+        read: false
+      });
+
+      console.log("Like notification created for:", post.user);
+    }
+
     res.redirect("/");
-  } catch (error){
-    console.log(error);
-    res.status(500).send("Error liking post");
+
+  } catch (error) {
+    console.log("Like post error:", error);
+    res.redirect("/");
+  }
+});
+
+app.post('/addcomment', requireLogin, async (req, res) => {
+  try {
+    const postId = req.body.postId;
+    const commentText = req.body.text;
+
+    const currentUser = await findUser(req.session.username);
+    const displayName = currentUser.usernameProfi || currentUser.username;
+
+    const post = await posts.getPostById(postId);
+
+    if (!post) {
+      return res.redirect('/');
+    }
+
+    await posts.addComment(
+      postId,
+      displayName,
+      commentText
+    );
+
+    if (post.user !== req.session.username) {
+      await notificationModel.create({
+        userToNotify: post.user,
+        fromUser: displayName,
+        type: "comment",
+        postId: post._id,
+        read: false
+      });
+
+      console.log("Comment notification created for:", post.user);
+    }
+
+    res.redirect('/');
+
+  } catch (error) {
+    console.log("Add comment error:", error);
+    res.redirect('/');
   }
 });
 

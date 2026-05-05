@@ -52,10 +52,14 @@ async function getLastNPosts(n = 3) {
   return foundPosts;
 }
 
+async function getPostById(postId) {
+  return await postData.findById(postId);
+}
+
 async function likePost(postId, username) {
   const post = await postData.findById(postId);
 
-  if (!post) return;
+  if (!post) return null;
 
   if (!post.likedBy) {
     post.likedBy = [];
@@ -66,11 +70,14 @@ async function likePost(postId, username) {
     post.likes = post.likedBy.length;
     await post.save();
   }
+
+  return post;
 }
 
 module.exports = {
   addPost,
   addComment,
   getLastNPosts,
+  getPostById,
   likePost
 };

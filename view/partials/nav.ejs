@@ -7,20 +7,6 @@
       <li><a href="/register"><i class="fa-solid fa-user-plus"></i> Register</a></li>
     <% } else { %>
       <li><a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-      <li><a href="/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
-      <li><a href="/social"><i class="fa-solid fa-users"></i> Social</a></li>
-      <li><a href="/dataCollector"><i class="fa-solid fa-plane-departure"></i> Zodiac Travel</a></li>
     <% } %>
   </ul>
 </nav>
-<script>
-  const burger = document.querySelector('.burger');
-  const menu = document.querySelector('.menu');
-
-  if (burger && menu) {
-    burger.addEventListener('click', () => {
-      const isOpen = menu.classList.toggle('open');
-      burger.setAttribute('aria-expanded', isOpen);
-    });
-  }
-</script>

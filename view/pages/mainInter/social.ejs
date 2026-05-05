@@ -1,96 +1,203 @@
 <%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
 
-<div class="posts-section">
-
+<div class="post-section">
   <div class="posts-content-layout">
 
-    <!-- LEFT SIDE: HOROSCOPE -->
+    <!-- LEFT SIDE: HOROSCOPE + NOTIFICATION CARD -->
     <div class="posts-left-side">
-      <% if (isLoggedIn) { %>
-     <section class="daily-horoscope-card">
-              <% if (horoscope) { %>
-    <%
-      let zodiacIcon = "";
+      
 
-      if (zodiac === "Aries") {
-        zodiacIcon = "/images/zodiac/Aries.png";
-      } else if (zodiac === "Taurus") {
-        zodiacIcon = "/images/zodiac/Taurus.png";
-      } else if (zodiac === "Gemini") {
-        zodiacIcon = "/images/zodiac/Gemini.png";
-      } else if (zodiac === "Cancer") {
-        zodiacIcon = "/images/zodiac/cancer.png";
-      } else if (zodiac === "Leo") {
-        zodiacIcon = "/images/zodiac/leo.png";
-      } else if (zodiac === "Virgo") {
-        zodiacIcon = "/images/zodiac/virgo.png";
-      } else if (zodiac === "Libra") {
-        zodiacIcon = "/images/zodiac/libra.png";
-      } else if (zodiac === "Scorpio") {
-        zodiacIcon = "/images/zodiac/scorpio.png";
-      } else if (zodiac === "Sagittarius") {
-        zodiacIcon = "/images/zodiac/sagittarius.png";
-      } else if (zodiac === "Capricorn") {
-        zodiacIcon = "/images/zodiac/capricorn.png";
-      } else if (zodiac === "Aquarius") {
-        zodiacIcon = "/images/zodiac/aquarius.png";
-      } else if (zodiac === "Pisces") {
-        zodiacIcon = "/images/zodiac/pisces.png";
-      }
-    %>
+      <% if (isLoggedIn && horoscope) { %>
 
-      <div class="horoscope-user-row">
-    <% if (zodiacIcon) { %>
-      <img class="zodiac-icon-small" src="<%= zodiacIcon %>" alt="<%= zodiac %> icon">
-    <% } %>
+        <%
+          let zodiacIcon = "";
 
-    <h3>Hello <%= usernameProfi || username %></h3>
-  </div>
-   
+          if (zodiac === "Aries") {
+            zodiacIcon = "/images/zodiac/Aries.png";
+          } else if (zodiac === "Taurus") {
+            zodiacIcon = "/images/zodiac/Taurus.png";
+          } else if (zodiac === "Gemini") {
+            zodiacIcon = "/images/zodiac/Gemini.png";
+          } else if (zodiac === "Cancer") {
+            zodiacIcon = "/images/zodiac/cancer.png";
+          } else if (zodiac === "Leo") {
+            zodiacIcon = "/images/zodiac/leo.png";
+          } else if (zodiac === "Virgo") {
+            zodiacIcon = "/images/zodiac/virgo.png";
+          } else if (zodiac === "Libra") {
+            zodiacIcon = "/images/zodiac/libra.png";
+          } else if (zodiac === "Scorpio") {
+            zodiacIcon = "/images/zodiac/scorpio.png";
+          } else if (zodiac === "Sagittarius") {
+            zodiacIcon = "/images/zodiac/sagittarius.png";
+          } else if (zodiac === "Capricorn") {
+            zodiacIcon = "/images/zodiac/capricorn.png";
+          } else if (zodiac === "Aquarius") {
+            zodiacIcon = "/images/zodiac/aquarius.png";
+          } else if (zodiac === "Pisces") {
+            zodiacIcon = "/images/zodiac/pisces.png";
+          }
+        %>
 
-    <h3><%= zodiac %> Travel Horoscope</h3>
+        <%
+  let zodiacEmoji = "";
 
-    <p><strong>Today’s energy:</strong> <%= horoscope.energy %></p>
-    <p><strong>Best city for today:</strong> <%= horoscope.city %></p>
-    <p><strong>Why this place matches your day:</strong> <%= horoscope.why %></p>
-    <p><strong>Travel advice:</strong> <%= horoscope.advice %></p>
-  <% } %>
+  if (zodiac === "Aries") {
+    zodiacEmoji = "♈";
+  } else if (zodiac === "Taurus") {
+    zodiacEmoji = "♉";
+  } else if (zodiac === "Gemini") {
+    zodiacEmoji = "♊";
+  } else if (zodiac === "Cancer") {
+    zodiacEmoji = "♋";
+  } else if (zodiac === "Leo") {
+    zodiacEmoji = "♌";
+  } else if (zodiac === "Virgo") {
+    zodiacEmoji = "♍";
+  } else if (zodiac === "Libra") {
+    zodiacEmoji = "♎";
+  } else if (zodiac === "Scorpio") {
+    zodiacEmoji = "♏";
+  } else if (zodiac === "Sagittarius") {
+    zodiacEmoji = "♐";
+  } else if (zodiac === "Capricorn") {
+    zodiacEmoji = "♑";
+  } else if (zodiac === "Aquarius") {
+    zodiacEmoji = "♒";
+  } else if (zodiac === "Pisces") {
+    zodiacEmoji = "♓";
+  }
+%>
+
+<div class="mobile-left-icons">
+  <button type="button" class="mobile-card-icon zodiac-emoji" id="openHoroscopeCard">
+    <%= zodiacEmoji %>
+  </button>
+
+  <button type="button" class="mobile-card-icon" id="openNotificationCard">
+    🔔
+  </button>
+</div>
+
+        <section class="daily-horoscope-card" id="horoscopeCard">
+
+          <div class="daily-horoscope-inner">
+
+            <!-- FRONT -->
+            <div class="daily-horoscope-front">
+              <div class="horoscope-front-content">
+                <h3>Hello <%= usernameProfi || username %></h3>
+                <% if (zodiacIcon) { %>
+                  <img class="zodiac-icon-small" src="<%= zodiacIcon %>" alt="<%= zodiac %> icon">
+                <% } %>
+
+                <h4>Zodiac Sign For <%= zodiac %></h4>
+                <p>Tap to see your travel horoscope</p>
+              </div>
+            </div>
+
+            <!-- BACK -->
+            <div class="daily-horoscope-back">
+              <h3><%= zodiac %> Travel Horoscope</h3>
+
+              <p><strong>Today’s energy:</strong> <%= horoscope.energy %></p>
+              <p><strong>Best city for today:</strong> <%= horoscope.city %></p>
+              <p><strong>Why this place matches your day:</strong> <%= horoscope.why %></p>
+              <p><strong>Travel advice:</strong> <%= horoscope.advice %></p>
+            </div>
+
+          </div>
 
         </section>
+
       <% } %>
-    </div>
+
+      <!-- NOTIFICATION CARD -->
+      <% if (isLoggedIn) { %>
+
+        <section class="notification-card" id="notificationCard">
+
+          <h3>Activity</h3>
+
+          <div class="notification-row">
+            <span>Posts</span>
+            <strong>
+              <%= posts ? posts.filter(function(post) { return post.user === username; }).length : 0 %>
+            </strong>
+          </div>
+
+          <div class="notification-row">
+            <span>Notifications</span>
+            <strong><%= notifications ? notifications.length : 0 %></strong>
+          </div>
+
+          <div class="notification-list">
+            <% if (notifications && notifications.length > 0) { %>
+
+              <% notifications.forEach(function(notification) { %>
+                <div class="notification-item">
+                  <p class="notification-text">
+                    <strong><%= notification.fromUser %></strong>
+                    <%= notification.type === "like" ? "liked your post." : "commented on your post." %>
+                  </p>
+                </div>
+              <% }) %>
+
+            <% } else { %>
+
+              <div class="notification-item">
+                <p class="notification-text">
+                  No new notifications yet.
+                </p>
+              </div>
+
+            <% } %>
+          </div>
+
+        </section>
+
+      <% } %>
+
+    </div> <!-- closes posts-left-side -->
+
 
     <!-- RIGHT SIDE: CREATE POST + RECENT POSTS -->
     <div class="posts-right-side">
 
       <% if (isLoggedIn) { %>
+        
         <div class="create-post-wrapper">
           <h2>Create a new post</h2>
 
           <form class="create-post-form" action="/posts/create" method="POST" enctype="multipart/form-data">
-            <div class="create-post-card">
-              <textarea 
-                name="caption" 
-                class="caption-input" 
-                placeholder="Write something..."
-                required
-              ></textarea>
 
-              <input 
-                type="file" 
-                id="avatar" 
-                name="avatar" 
-                accept="image/png, image/jpeg"
-                hidden
-              >
+  <div class="create-post-card">
+    <textarea 
+      name="caption" 
+      class="caption-input" 
+      placeholder="Write something..."
+      required
+    ></textarea>
 
-              <div class="post-actions">
-                <label for="avatar" class="upload-btn">Upload</label>
-                <button class="post-submit-btn" type="submit">Post</button></div>
-            </div>
+    <input 
+      type="file" 
+      id="avatar" 
+      name="avatar" 
+      accept="image/png, image/jpeg"
+      hidden
+    >
+  </div>
 
-          </form>
+  <div class="post-actions upload-actions">
+    <label for="avatar" class="upload-btn">Upload</label>
+  </div>
+
+  <div class="post-actions submit-actions">
+    <button class="post-submit-btn" type="submit">Post</button>
+  </div>
+
+</form>
         </div>
       <% } else { %>
         <div class="create-post-wrapper">
@@ -98,9 +205,10 @@
         </div>
       <% } %>
 
-      <h2>Recent Posts</h2>
 
+      <!-- RECENT POSTS -->
       <% (posts || []).forEach(function(post) { %>
+
         <div class="post-card">
 
           <% const profileImage = post.profileImage ? post.profileImage : '/images/default-profile.png'; %>
@@ -110,12 +218,16 @@
             <h3><%= post.user %></h3>
           </div>
 
+          <!-- CAPTION NOW APPEARS ABOVE THE IMAGE -->
+          <p class="post-caption"><%= post.caption %></p>
+
           <% if (post.image) { %>
             <img class="post-image" src="<%= post.image %>" alt="post image">
           <% } %>
 
           <div class="likes-row">
             <% if (isLoggedIn) { %>
+
               <% if ((post.likedBy || []).includes(username)) { %>
                 <span class="liked-heart">♥</span>
               <% } else { %>
@@ -124,6 +236,7 @@
                   <button class="heart-button" type="submit">♡</button>
                 </form>
               <% } %>
+
             <% } else { %>
               <span class="heart-disabled">♡</span>
             <% } %>
@@ -131,10 +244,7 @@
             <span class="likes-count"><%= post.likes %></span>
           </div>
 
-          <p class="post-caption"><%= post.caption %></p>
-
           <div class="comments-box">
-            <h4>Comments</h4>
 
             <% (post.comments || []).forEach(function(comment) { %>
               <p class="comments">
@@ -149,18 +259,67 @@
                 <button type="submit">Comment</button>
               </form>
             <% } %>
+
           </div>
 
         </div>
+
       <% }) %>
 
-    </div>
+    </div> <!-- closes posts-right-side -->
 
-  </div>
+  </div> <!-- closes posts-content-layout -->
+</div> <!-- closes post-section -->
 
-</div>
+<script>
+  // Followed youtube toturial for the card flip, but had lots of issue with the toggle and used chatGBT to help me with the logic and structure of the event listener 
+  const openHoroscopeCard = document.getElementById("openHoroscopeCard");
+  const openNotificationCard = document.getElementById("openNotificationCard");
+
+  const horoscopeCard = document.getElementById("horoscopeCard");
+  const notificationCard = document.getElementById("notificationCard");
+
+  if (openHoroscopeCard && horoscopeCard && notificationCard) {
+    openHoroscopeCard.addEventListener("click", function () {
+      notificationCard.classList.remove("card-open");
+
+      if (!horoscopeCard.classList.contains("card-open")) {
+        // 1st click: open horoscope card
+        horoscopeCard.classList.add("card-open");
+        horoscopeCard.classList.remove("flipped");
+      } else if (!horoscopeCard.classList.contains("flipped")) {
+        // 2nd click: flip to back
+        horoscopeCard.classList.add("flipped");
+      } else {
+        // 3rd click: close horoscope card and reset it
+        horoscopeCard.classList.remove("card-open");
+        horoscopeCard.classList.remove("flipped");
+      }
+    });
+  }
+
+  if (openNotificationCard && notificationCard && horoscopeCard) {
+    openNotificationCard.addEventListener("click", function () {
+      horoscopeCard.classList.remove("card-open");
+      horoscopeCard.classList.remove("flipped");
+
+      notificationCard.classList.toggle("card-open");
+    });
+  }
+   if (horoscopeCard) {
+    horoscopeCard.addEventListener("click", function () {
+      if (window.innerWidth > 700) {
+        horoscopeCard.classList.toggle("flipped");
+      }
+    });
+  }
+</script>
+
+<%- include('../../partials/mobileBottomNav') %> 
 
 <%- include('../../partials/footer') %>
+
+
 <% if (!isLoggedIn) { %>
   <script>
     setTimeout(function () {
