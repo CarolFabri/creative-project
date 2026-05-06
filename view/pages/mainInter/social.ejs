@@ -41,44 +41,44 @@
         %>
 
         <%
-  let zodiacEmoji = "";
+          let zodiacEmoji = "";
 
-  if (zodiac === "Aries") {
-    zodiacEmoji = "♈";
-  } else if (zodiac === "Taurus") {
-    zodiacEmoji = "♉";
-  } else if (zodiac === "Gemini") {
-    zodiacEmoji = "♊";
-  } else if (zodiac === "Cancer") {
-    zodiacEmoji = "♋";
-  } else if (zodiac === "Leo") {
-    zodiacEmoji = "♌";
-  } else if (zodiac === "Virgo") {
-    zodiacEmoji = "♍";
-  } else if (zodiac === "Libra") {
-    zodiacEmoji = "♎";
-  } else if (zodiac === "Scorpio") {
-    zodiacEmoji = "♏";
-  } else if (zodiac === "Sagittarius") {
-    zodiacEmoji = "♐";
-  } else if (zodiac === "Capricorn") {
-    zodiacEmoji = "♑";
-  } else if (zodiac === "Aquarius") {
-    zodiacEmoji = "♒";
-  } else if (zodiac === "Pisces") {
-    zodiacEmoji = "♓";
-  }
-%>
+          if (zodiac === "Aries") {
+            zodiacEmoji = "♈";
+          } else if (zodiac === "Taurus") {
+            zodiacEmoji = "♉";
+          } else if (zodiac === "Gemini") {
+            zodiacEmoji = "♊";
+          } else if (zodiac === "Cancer") {
+            zodiacEmoji = "♋";
+          } else if (zodiac === "Leo") {
+            zodiacEmoji = "♌";
+          } else if (zodiac === "Virgo") {
+            zodiacEmoji = "♍";
+          } else if (zodiac === "Libra") {
+            zodiacEmoji = "♎";
+          } else if (zodiac === "Scorpio") {
+            zodiacEmoji = "♏";
+          } else if (zodiac === "Sagittarius") {
+            zodiacEmoji = "♐";
+          } else if (zodiac === "Capricorn") {
+            zodiacEmoji = "♑";
+          } else if (zodiac === "Aquarius") {
+            zodiacEmoji = "♒";
+          } else if (zodiac === "Pisces") {
+            zodiacEmoji = "♓";
+          }
+        %>
 
-<div class="mobile-left-icons">
-  <button type="button" class="mobile-card-icon zodiac-emoji" id="openHoroscopeCard">
-    <%= zodiacEmoji %>
-  </button>
+        <div class="mobile-left-icons">
+          <button type="button" class="mobile-card-icon zodiac-emoji" id="openHoroscopeCard">
+            <%= zodiacEmoji %>
+          </button>
 
-  <button type="button" class="mobile-card-icon" id="openNotificationCard">
-    🔔
-  </button>
-</div>
+          <button type="button" class="mobile-card-icon" id="openNotificationCard">
+            🔔
+          </button>
+        </div>
 
         <section class="daily-horoscope-card" id="horoscopeCard">
 
@@ -166,43 +166,80 @@
     <div class="posts-right-side">
 
       <% if (isLoggedIn) { %>
-        
+
         <div class="create-post-wrapper">
           <h2>Create a new post</h2>
 
           <form class="create-post-form" action="/posts/create" method="POST" enctype="multipart/form-data">
 
-  <div class="create-post-card">
-    <textarea 
-      name="caption" 
-      class="caption-input" 
-      placeholder="Write something..."
-      required
-    ></textarea>
+            <input 
+              type="file" 
+              id="avatar" 
+              name="avatar" 
+              accept="image/png, image/jpeg"
+              hidden
+            >
 
-    <input 
-      type="file" 
-      id="avatar" 
-      name="avatar" 
-      accept="image/png, image/jpeg"
-      hidden
-    >
-  </div>
+            <div class="create-post-card">
 
-  <div class="post-actions upload-actions">
-    <label for="avatar" class="upload-btn">Upload</label>
-  </div>
+              <!-- CAMERA + EMOJI BUTTONS -->
+              <div class="post-actions upload-actions">
+                <label for="avatar" class="upload-btn" aria-label="Upload image">📷</label>
 
-  <div class="post-actions submit-actions">
-    <button class="post-submit-btn" type="submit">Post</button>
-  </div>
+                <button 
+                  type="button" 
+                  class="emoji-btn" 
+                  id="emojiBtn" 
+                  aria-label="Add emoji"
+                >
+                  😊
+                </button>
+              </div>
 
-</form>
+              <!-- EMOJI DROPDOWN -->
+              <div class="emoji-picker" id="emojiPicker">
+                <button type="button">✨</button>
+                <button type="button">💜</button>
+                <button type="button">🌙</button>
+                <button type="button">⭐</button>
+                <button type="button">🔥</button>
+                <button type="button">🌸</button>
+                <button type="button">😂</button>
+                <button type="button">😍</button>
+                <button type="button">🥰</button>
+                <button type="button">🪐</button>
+              </div>
+
+              <!-- IMAGE PREVIEW -->
+              <img 
+                id="imagePreview" 
+                class="image-preview" 
+                alt="Selected image preview"
+              >
+
+              <!-- CAPTION -->
+              <textarea 
+                name="caption" 
+                class="caption-input" 
+                placeholder="Write something..."
+                required
+              ></textarea>
+
+            </div>
+
+            <div class="post-actions submit-actions">
+              <button class="post-submit-btn" type="submit">Post</button>
+            </div>
+
+          </form>
         </div>
+
       <% } else { %>
+
         <div class="create-post-wrapper">
           <p>Please <a href="/login">log in</a> to create a post.</p>
         </div>
+
       <% } %>
 
 
@@ -226,6 +263,7 @@
           <% } %>
 
           <div class="likes-row">
+
             <% if (isLoggedIn) { %>
 
               <% if ((post.likedBy || []).includes(username)) { %>
@@ -242,6 +280,7 @@
             <% } %>
 
             <span class="likes-count"><%= post.likes %></span>
+
           </div>
 
           <div class="comments-box">
@@ -306,10 +345,60 @@
       notificationCard.classList.toggle("card-open");
     });
   }
-   if (horoscopeCard) {
+
+  if (horoscopeCard) {
     horoscopeCard.addEventListener("click", function () {
       if (window.innerWidth > 700) {
         horoscopeCard.classList.toggle("flipped");
+      }
+    });
+  }
+
+  // IMAGE PREVIEW WHEN USER SELECTS FILE
+  const avatarInput = document.getElementById("avatar");
+  const imagePreview = document.getElementById("imagePreview");
+  const createPostCard = document.querySelector(".create-post-card");
+
+  if (avatarInput && imagePreview && createPostCard) {
+    avatarInput.addEventListener("change", function () {
+      const file = avatarInput.files[0];
+
+      if (!file) {
+        imagePreview.style.display = "none";
+        imagePreview.src = "";
+        createPostCard.classList.remove("has-image");
+        return;
+      }
+
+      imagePreview.src = URL.createObjectURL(file);
+      createPostCard.classList.add("has-image");
+    });
+  }
+
+  // EMOJI PICKER
+  const emojiBtn = document.getElementById("emojiBtn");
+  const emojiPicker = document.getElementById("emojiPicker");
+  const captionInput = document.querySelector(".caption-input");
+
+  if (emojiBtn && emojiPicker && captionInput) {
+    emojiBtn.addEventListener("click", function () {
+      emojiPicker.classList.toggle("open");
+    });
+
+    emojiPicker.querySelectorAll("button").forEach(function (button) {
+      button.addEventListener("click", function () {
+        captionInput.value += button.textContent;
+        captionInput.focus();
+        emojiPicker.classList.remove("open");
+      });
+    });
+
+    document.addEventListener("click", function (event) {
+      const clickedEmojiButton = emojiBtn.contains(event.target);
+      const clickedPicker = emojiPicker.contains(event.target);
+
+      if (!clickedEmojiButton && !clickedPicker) {
+        emojiPicker.classList.remove("open");
       }
     });
   }
