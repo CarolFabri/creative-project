@@ -2,7 +2,7 @@
 body {
   margin: 0;
   background: #f4f4f4;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Space Mono", monospace;
   color: #111;
 }
 
@@ -11,6 +11,12 @@ h1,
 h2 {
   text-align: center;
   margin: 16px 0;
+}
+p{
+   font-family: "Space Mono", monospace;
+}
+h3{
+   font-family: "Space Mono", monospace;
 }
 
 /* Layout Social Media */
@@ -74,6 +80,8 @@ h2 {
 .caption-input {
   width: 100%;
   box-sizing: border-box;
+  font-family: "Space Mono", monospace;
+  font-size: 1.3rem
 }
 
 @media (max-width: 900px) {
@@ -155,7 +163,6 @@ button {
   align-items: center;
   justify-content: center;
   border-radius: 0 14px 0 12px;
-  font-size: 24px;
   line-height: 1;
   cursor: pointer;
 }
@@ -185,12 +192,11 @@ button:hover {
   margin-right: auto;
 }
 
-
 /* horoscope card */
 .daily-horoscope-card {
   width: 100%;
   max-width: 400px;
-  height: 450px;
+  height: 500px;
   perspective: 1000px;
   margin-top: 60px;
   margin-left: 20px;
@@ -274,13 +280,14 @@ button:hover {
   background: rgba(190, 160, 220, 0.55);
   border: 2px solid rgba(255, 255, 255, 0.45);
   box-shadow: 0 8px 25px rgba(180, 50, 220, 0.25);
-  backdrop-filter: blur(8px);
+  /* backdrop-filter: blur(8px); */
 }
 
 .notification-card h3 {
   margin-top: 0;
   margin-bottom: 18px;
   font-size: 1.4rem;
+  font-family: "Space Mono", monospace;
 }
 
 .notification-row {
@@ -305,7 +312,7 @@ button:hover {
 
 .notification-text {
   margin-top: 16px;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
 }
 
 
@@ -356,9 +363,10 @@ button:hover {
 
 .nav-logo {
   color: white;
-  font-size: 0.8rem;
+  font-size: 3.5rem;
   font-weight: 700;
   text-decoration: none;
+  font-family: "Space Mono", monospace;
 }
 
 .menu {
@@ -442,6 +450,7 @@ button:hover {
   padding: 6px;
   border: 1px solid #999;
   border-radius: 5px;
+  font-size: 1.2rem;
 }
 
 .comment-form button {
@@ -502,7 +511,7 @@ button:hover {
 
 .create-post-wrapper h2 {
   margin-bottom: 18px;
-  font-size: 18px;
+  font-size: 1.5rem
 }
 
 
@@ -596,6 +605,7 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 2rem;
 }
 
 /* hidden by default */
@@ -650,9 +660,10 @@ button:hover {
   resize: none;
   padding: 20px;
   box-sizing: border-box;
-  font-size: 14px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5rem;
+  font-family: "Space Mono", monospace;
   border-radius: 10px;
+  margin-top: 20px;
 }
 
 /* Upload button inside the grey box */
@@ -690,9 +701,11 @@ button:hover {
 .post-submit-btn {
     width:130px;
     padding: 14px 0;
+    font-family: "Space Mono", monospace;
+    font-size: 1rem;
     bottom: 12px;
     background: #d0b9d8;
-    font-size: 14px;
+    font-size: 1.2rem;
     border-radius: 12px;
     border-color: #701a8a17;
     box-shadow: 0 0 5px #dfa6d8, 0 0 10px #b567cd, 0 0 20px #701a8a, 0 0 40px rgb(255 102 255 / 46%);
@@ -716,7 +729,7 @@ button:hover {
 
 /* Caption */
 .post-card p {
-  font-size: 14px;
+  font-size: 1.3rem;
   margin: 6px 0;
 }
 
@@ -746,8 +759,9 @@ button:hover {
 }
 
 .post-header h3 {
-  margin: 0;
-  font-size: 14px;
+  font-size: 1rem;
+  word-break: break-word;
+  font-family: "Space Mono", monospace;
 }
 
 .profile-icon {
@@ -821,6 +835,7 @@ hr {
   transform: translateX(-50%);
   width: 100%;
   height: 64px;
+  margin-bottom: 5px;
 
   display: flex;
   justify-content: space-around;
@@ -872,7 +887,7 @@ hr {
   }
 
   .post-header h3 {
-    font-size: 14px;
+    font-size: 1.3rem;
     word-break: break-word;
   }
 
@@ -904,6 +919,7 @@ hr {
     width: 95%;
     max-width: 500px;
     margin: 0 auto 2px auto;
+    font-size: 1.5rem;
   }
 
   .posts-left-side,
@@ -927,14 +943,14 @@ hr {
     height: 56px;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.55);
-    background: #753f9d;
+    background: #9510f7;
     box-shadow: 0 0 12px rgba(190, 80, 220, 0.35);
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 18px;
+    font-size: 1.5rem;
     cursor: pointer;
   }
 
@@ -955,8 +971,8 @@ hr {
   }
 
   .daily-horoscope-card {
-    max-width: 320px;
-    height: 400px;
+    max-width: 380px;
+    height: 600px;
   }
     .daily-horoscope-card,
   .notification-card {
@@ -975,7 +991,8 @@ hr {
   }
 
   .daily-horoscope-front h3 {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
+    
   }
 
   .daily-horoscope-front h4 {
@@ -984,7 +1001,7 @@ hr {
 
   .daily-horoscope-front p,
   .daily-horoscope-back p {
-    font-size: 0.95rem;
+    font-size: 1.2rem;
   }
   .notification-card{
     width: 75%;
@@ -1030,7 +1047,7 @@ hr {
   .bottom-nav-item {
     color: white;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 1.2rem;
     font-weight: 600;
 
     display: flex;
@@ -1040,8 +1057,9 @@ hr {
   }
 
   .bottom-nav-icon {
-    font-size: 20px;
-    line-height: 1;
+  font-size: 2.2rem;
+  line-height: 1;
+  margin-top: 20px;
   }
 
   .post-section,
@@ -1092,7 +1110,7 @@ hr {
     .post-image {
     width: 100%;
     height: auto;
-    max-height: 280px;
+    max-height: 480px;
     object-fit: contain;
     display: block;
     border-radius: 8px;
@@ -1167,8 +1185,10 @@ hr {
 
 .neon-form label {
   font-size: 18px;
+  font-family: "Space Mono", monospace;
   font-weight: bold;
   color: #111;
+
 }
 
 .neon-form input[type="text"],
@@ -1241,6 +1261,7 @@ hr {
   border: 1px solid #b44cff;
   border-radius: 10px;
   padding: 10px;
+  font-size: 1.1rem;
 }
 
 @media (max-width: 600px) {
@@ -2125,7 +2146,7 @@ hr {
   .nav-logo {
     text-align: center;
     margin: 0;
-    font-size: 1rem;
+    font-size: 3rem;
     white-space: nowrap;
   }
 
@@ -2146,7 +2167,8 @@ hr {
   }
 
   .menu a {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     white-space: nowrap;
+    font-family: "Space Mono", monospace;
   }
 }

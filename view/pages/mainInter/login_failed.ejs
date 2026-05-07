@@ -1,9 +1,25 @@
 <%- include('../../partials/header') %>
 <div class="page-login">
 <%- include('../../partials/nav') %>
-<main>
-    <main class="start-background logged ">
-        <h1>Login failed, try again </h1>
-</main>
-<%- include('../../partials/footer') %>
+ <p class="login-error">Login failed, try again</p>
+  <div class="auth-hero">
+    <main id="loginBox">
+     
+
+      <form class="neon-form" action="/login" method="POST">
+        <label for="username">Email</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <input class="button-res" type="submit" value="Login">
+      </form>
+
+      <% if (errorMessage) { %>
+        <p class="login-error"><%= errorMessage %></p>
+      <% } %>
+    </main>
+  </div>
+
 </div>
