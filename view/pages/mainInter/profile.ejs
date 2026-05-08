@@ -1,80 +1,140 @@
 <%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
 
-<div class="auth-hero page-login">
-  <main id="loginBox" class="profile">
-    <div class="profile-section">
+<main id="loginBox" class="profile">
 
-      <h2>Profile for: <br><%= user.usernameProfi || user.username %></h2>
+  <div class="profile-section">
 
-      <div class="profile-upload-row">
-        <% if (user.profileImage) { %>
-          <img class="profile-main-img" src="<%= user.profileImage %>" alt="profile image">
-        <% } else { %>
-          <p>No profile image yet.</p>
-        <% } %>
+    <div class="profile-layout">
 
-        <form class="profile-img" action="/profile/image" method="POST" enctype="multipart/form-data">
-          <input 
-            type="file" 
-            id="profileUpload" 
-            name="avatar" 
-            accept="image/png, image/jpeg"
-            hidden
-          >
+      <!-- LEFT SIDE -->
+      <div class="profile-left-side">
 
-          <label for="profileUpload" class="custom-file-btn">Choose File</label>
+        <div class="profile-info-box">
 
-          <input class="button-res profile" type="submit" value="Upload Picture">
-        </form>
+          <h2>Profile for: <br><%= user.usernameProfi || user.username %></h2>
+
+          <!-- PROFILE IMAGE FORM -->
+          <form class="profile-img" action="/profile/image" method="POST" enctype="multipart/form-data">
+
+            <input 
+              type="file" 
+              id="profileUpload" 
+              name="avatar" 
+              accept="image/png, image/jpeg"
+              hidden
+            >
+
+            <div class="profile-image-wrapper">
+
+              <% if (user.profileImage) { %>
+                <img 
+                  class="profile-main-img" 
+                  src="<%= user.profileImage %>" 
+                  alt="<%= user.usernameProfi || user.username %>'s profile picture"
+                >
+              <% } else { %>
+                <div class="profile-main-img profile-placeholder">
+                  No profile image yet.
+                </div>
+              <% } %>
+
+              <label 
+                for="profileUpload" 
+                class="upload-btn profile-upload-icon overlay-camera" 
+                aria-label="Upload profile image"
+              >
+                📷
+              </label>
+
+            </div>
+
+            <button class="button-res profile" type="submit">
+              Upload Picture
+            </button>
+
+          </form>
+
+          <!-- DOB BOX -->
+          <div class="dob-box">
+
+            <form action="/profile/dob" method="post" class="neon-form dob-form">
+
+              <label for="dob">Date of Birth:</label>
+
+              <input 
+                type="date"
+                id="dob"
+                name="dob"
+                class="dob-input"
+                value="<%= user.dob ? user.dob.toISOString().split('T')[0] : '' %>"
+                required
+              >
+
+              <button type="submit" class="button-res">
+                Save Date of Birth
+              </button>
+
+              <p class="dob-display">
+                <span>Your Date of Birth:</span>
+                <%= user.dob ? user.dob.toLocaleDateString("en-GB") : "Not set yet" %>
+              </p>
+
+            </form>
+
+          </div>
+
+        </div>
+
       </div>
 
-    <div class="dob-box">
-  <form action="/profile/dob" method="post" class="neon-form dob-form">
-    <label for="dob">Date of Birth:</label>
+      <!-- RIGHT SIDE -->
+      <div class="profile-right-side">
 
-    <input 
-      type="date"
-      id="dob"
-      name="dob"
-      class="dob-input"
-      value="<%= user.dob ? user.dob.toISOString().split('T')[0] : '' %>"
-      required
-    >
+        <section class="chat-history">
 
-    <button type="submit" class="button-res">Save Date of Birth</button>
+          <h2 class="profileTitle">My Chat History</h2>
 
-    <p class="dob-display">
-      <span>Your Date of Birth:</span>
-      <%= user.dob ? user.dob.toLocaleDateString("en-GB") : "Not set yet" %>
-    </p>
-  </form>
-</div>
+          <% if (messages && messages.length > 0) { %>
 
-      <section class="chat-history">
-        <h2 class="profileTitle">My Chat History</h2>
+            <% [...messages].reverse().forEach(msg => { %>
 
-        <% if (messages && messages.length > 0) { %>
-          <% [...messages].reverse().forEach(msg => { %>
-            <% if (msg.sender === "user") { %>
-              <div class="history">
-                <p class="history-card user-history"><strong>You:</strong> <%= msg.text %></p>
-              </div>
-            <% } else { %>
-              <div class="history">
-                <p class="history-card generator-history"><strong>Generator:</strong> <%= msg.text %></p>
-              </div>
-            <% } %>
-          <% }) %>
-        <% } else { %>
-          <p>No chat history yet.</p>
-        <% } %>
-      </section>
+              <% if (msg.sender === "user") { %>
+
+                <div class="history">
+                  <p class="history-card user-history">
+                    <strong>You:</strong> <%= msg.text %>
+                  </p>
+                </div>
+
+              <% } else { %>
+
+                <div class="history">
+                  <p class="history-card generator-history">
+                    <strong>Generator:</strong> <%= msg.text %>
+                  </p>
+                </div>
+
+              <% } %>
+
+            <% }) %>
+
+          <% } else { %>
+
+            <p>No chat history yet.</p>
+
+          <% } %>
+
+        </section>
+
+      </div>
 
     </div>
-  </main>
-</div>
+
+  </div>
+
+</main>
 
 <%- include('../../partials/mobileBottomNav') %>
-
 <%- include('../../partials/footer') %>
+ 

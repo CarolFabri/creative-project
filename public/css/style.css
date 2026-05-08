@@ -764,13 +764,7 @@ button:hover {
   font-family: "Space Mono", monospace;
 }
 
-.profile-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid #111;
-}
+
 /* Like Button */
 /* .likes-row {
   display: flex;
@@ -1216,7 +1210,6 @@ hr {
 }
 
 .button-res {
-    margin-top: 12px;
     padding: 13px;
     border: none;
     border-radius: 12px;
@@ -1305,7 +1298,7 @@ hr {
 
 /* Main title: "Profile for: carol12" */
 .profile-section h2 {
-  font-size: 2.2rem;
+  font-size: 1.4rem;
   font-weight: 800;
   text-align: center;
   line-height: 1.2;
@@ -1325,7 +1318,7 @@ hr {
 /* Labels like "Date of Birth:" */
 .profile-section label {
   display: block;
-  font-size: 1.1rem;
+  font-size: 3rem;
   font-weight: 700;
   color: #2b1238;
   margin-bottom: 10px;
@@ -1357,6 +1350,9 @@ hr {
   color: #6e28a9;
   font-weight: 800;
 }
+
+
+
 
 /* Empty states like "No profile image yet" / "No chat history yet" */
 .profile-upload-row p,
@@ -1394,12 +1390,11 @@ hr {
 }
 
 .dob-box .dob-input {
-  margin-bottom: 24px;
+  margin-bottom: 2px;
 }
 
 .dob-box .button-res {
   width: 100%;
-  margin-top: 10px;
 }
 
 /* Chat history title */
@@ -1408,7 +1403,6 @@ hr {
   text-align: center;
   font-size: 2rem;
   font-weight: 800;
-  margin-top: 26px;
   margin-bottom: 24px;
   color: #1e1027;
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
@@ -1562,30 +1556,237 @@ hr {
     0 0 20px rgba(180, 76, 255, 0.9),
     0 0 40px rgba(180, 76, 255, 0.7);
 }
-.profile-upload-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 22px;
+
+
+
+
+
+
+/* .profile {
   width: 100%;
+  overflow-x: hidden;
+} */
+
+/* .profile-section {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  box-sizing: border-box;
 }
 
-.profile-main-img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 50px;
-  border: 2px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25), inset 0 0 18px rgba(255, 255, 255, 0.45), 0 0 20px rgba(255, 255, 255, 0.45);
+.profile-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 35%) minmax(0, 1fr);
+  gap: 40px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+} */
+ .profile-info-box {
+  width: 100%;
+  padding: 30px 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 18px rgba(198, 111, 255, 0.18);
+  box-sizing: border-box;
+}
+
+.profile-info-box h2 {
+  text-align: center;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  margin-bottom: 24px;
+}
+
+.profile-upload-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
 }
 
 .profile-img {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  gap: 14px;
-  flex-wrap: wrap;
+  gap: 16px;
 }
+.profile-img {
+  gap: 2px;
+}
+
+.profile-main-img {
+  width: 260px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 20px;
+  display: block;
+}
+.profile-layout {
+  display: grid;
+  grid-template-columns: 62% 98%;
+  column-gap: 200px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-left-side,
+.profile-right-side {
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.profile-left-side {
+  width: 100%;
+}
+
+.profile-right-side {
+  width: 100%;
+  min-width: 0;
+}
+
+.chat-history {
+  width: 100%;
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.history-card {
+  width: 120%;
+  max-width: 800px;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+
+.profile-left-side h2 {
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  text-align: center;
+}
+
+.profile-upload-row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  background: pink;
+  
+}
+
+
+.profile-upload-control {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.profile-upload-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32px;
+  cursor: pointer;
+  border-radius: 35px 0 0 35px;
+
+}
+/* testing  */
+
+
+.profile-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+
+
+.profile-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.overlay-camera {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: auto;
+  bottom: auto;
+
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 1;
+  z-index: 5;
+}
+.profile-upload-button {
+  height: 70px;
+  margin: 0;
+  padding: 0 32px;
+
+  border: none;
+  border-radius: 20px;
+
+  background: #b9a2d6;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+/* Camera Emoji for Profile */
+ 
+.profile-upload-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+
+
+.profile-upload-button {
+  height: 86px;
+  margin: 0;
+  padding: 0 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 0 28px 28px 0;
+  line-height: 1.1;
+}
+
+
 .history {
   margin: 0;
   padding: 0;
@@ -1650,7 +1851,6 @@ hr {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
   width: 100%;
 }
 
