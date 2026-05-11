@@ -1,8 +1,10 @@
 <%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
 
-<div class="post-section">
-  <div class="posts-content-layout">
+<!-- Adding two classes to style the not logged in page -->
+<div class="post-section <%= !isLoggedIn ? 'guest-post-section' : '' %>">
+  <div class="posts-content-layout <%= !isLoggedIn ? 'guest-layout' : '' %>">
+
 
     <!-- LEFT SIDE: HOROSCOPE + NOTIFICATION CARD -->
     <div class="posts-left-side">
@@ -30,7 +32,7 @@
           } else if (zodiac === "Scorpio") {
             zodiacIcon = "/images/zodiac/scorpio.png";
           } else if (zodiac === "Sagittarius") {
-            zodiacIcon = "/images/zodiac/sagittarius.png";
+            zodiacIcon = "/images/zodiac/sagittarious.png";
           } else if (zodiac === "Capricorn") {
             zodiacIcon = "/images/zodiac/capricorn.png";
           } else if (zodiac === "Aquarius") {
