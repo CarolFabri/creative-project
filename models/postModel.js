@@ -12,6 +12,7 @@ const postSchema = new Schema({
   image: String,
   profileImage: String,
   caption: String,
+  zodiacTag: String,
   likes: { type: Number, default: 0 },
   likedBy: { type: [String], default: [] },
   time: { type: Date, default: Date.now },
@@ -20,12 +21,13 @@ const postSchema = new Schema({
 
 const postData = model('post', postSchema);
 
-async function addPost(user, caption, image, profileImage) {
+async function addPost(user, caption, image, profileImage, zodiacTag) {
   let newPost = {
     user: user,
     profileImage: profileImage,
     caption: caption,
     image: image,
+    zodiacTag: zodiacTag,
     likes: 0,
     likedBy: [],
     time: new Date(),
@@ -56,6 +58,25 @@ async function getPostById(postId) {
   return await postData.findById(postId);
 }
 
+async function deletePost(postId) {
+  return await postData.findByIdAndDelete(postId);
+}
+
+
+async function deletecomment(postId, commentId){
+  return await postData.findByIdAndDelete(commentId);
+}
+async function deleteComment(postId, commentId) {
+  return await postData.findByIdAndUpdate(
+    postId,
+    {
+      $pull: {
+        comments: { _id: commentId }
+      }
+    },
+    { new: true }
+  );
+}
 async function likePost(postId, username) {
   const post = await postData.findById(postId);
 
@@ -79,5 +100,7 @@ module.exports = {
   addComment,
   getLastNPosts,
   getPostById,
-  likePost
+  likePost,
+  deletePost,
+  deleteComment
 };

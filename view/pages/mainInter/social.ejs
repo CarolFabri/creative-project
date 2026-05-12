@@ -5,10 +5,8 @@
 <div class="post-section <%= !isLoggedIn ? 'guest-post-section' : '' %>">
   <div class="posts-content-layout <%= !isLoggedIn ? 'guest-layout' : '' %>">
 
-
     <!-- LEFT SIDE: HOROSCOPE + NOTIFICATION CARD -->
     <div class="posts-left-side">
-      
 
       <% if (isLoggedIn && horoscope) { %>
 
@@ -84,12 +82,26 @@
 
         <section class="daily-horoscope-card" id="horoscopeCard">
 
+          <div class="sparkles horoscope-sparkles">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
           <div class="daily-horoscope-inner">
 
             <!-- FRONT -->
             <div class="daily-horoscope-front">
               <div class="horoscope-front-content">
                 <h3>Hello <%= usernameProfi || username %></h3>
+
                 <% if (zodiacIcon) { %>
                   <img class="zodiac-icon-small" src="<%= zodiacIcon %>" alt="<%= zodiac %> icon">
                 <% } %>
@@ -120,41 +132,76 @@
 
         <section class="notification-card" id="notificationCard">
 
-          <h3>Activity</h3>
+          <div class="notification-header">
 
-          <div class="notification-row">
-            <span>Posts</span>
-            <strong>
-              <%= posts ? posts.filter(function(post) { return post.user === username; }).length : 0 %>
-            </strong>
+            <div>
+              <h3>Activity</h3>
+              <p>All your activity in one place</p>
+            </div>
+
+            <div class="notification-bell">
+              🔔
+            </div>
+
           </div>
 
-          <div class="notification-row">
-            <span>Notifications</span>
-            <strong><%= notifications ? notifications.length : 0 %></strong>
+          <div class="notification-stats">
+
+            <div class="notification-stat-box">
+              <span>Posts</span>
+              <strong>
+                <%= posts ? posts.filter(function(post) { return post.user === username; }).length : 0 %>
+              </strong>
+            </div>
+
+            <div class="notification-stat-box">
+              <span>Notifications</span>
+              <strong>
+                <%= notifications ? notifications.length : 0 %>
+              </strong>
+            </div>
+
           </div>
 
           <div class="notification-list">
+
             <% if (notifications && notifications.length > 0) { %>
 
               <% notifications.forEach(function(notification) { %>
+
                 <div class="notification-item">
-                  <p class="notification-text">
-                    <strong><%= notification.fromUser %></strong>
-                    <%= notification.type === "like" ? "liked your post." : "commented on your post." %>
-                  </p>
+
+                  <div class="notification-icon">
+                    <%= notification.type === "like" ? "💜" : "💬" %>
+                  </div>
+
+                  <div class="notification-content">
+
+                    <p>
+                      <strong><%= notification.fromUser %></strong>
+                      <%= notification.type === "like" ? "liked your post" : "commented on your post" %>
+                    </p>
+
+                    <% if (notification.text) { %>
+                      <small>"<%= notification.text %>"</small>
+                    <% } %>
+
+                  </div>
+
+                  <span class="notification-dot"></span>
+
                 </div>
+
               <% }) %>
 
             <% } else { %>
 
-              <div class="notification-item">
-                <p class="notification-text">
-                  No new notifications yet.
-                </p>
+              <div class="notification-empty">
+                <p>No new notifications yet.</p>
               </div>
 
             <% } %>
+
           </div>
 
         </section>
@@ -162,7 +209,6 @@
       <% } %>
 
     </div> <!-- closes posts-left-side -->
-
 
     <!-- RIGHT SIDE: CREATE POST + RECENT POSTS -->
     <div class="posts-right-side">
@@ -184,9 +230,16 @@
 
             <div class="create-post-card">
 
-              <!-- CAMERA + EMOJI BUTTONS -->
+              <!-- CAMERA + EMOJI + ZODIAC BUTTONS -->
               <div class="post-actions upload-actions">
-                <label for="avatar" class="upload-btn" aria-label="Upload image">📷</label>
+
+                <label 
+                  for="avatar" 
+                  class="upload-btn" 
+                  aria-label="Upload image"
+                >
+                  📷
+                </label>
 
                 <button 
                   type="button" 
@@ -196,6 +249,25 @@
                 >
                   😊
                 </button>
+
+                <button 
+                  type="button" 
+                  class="zodiac-btn" 
+                  id="zodiacBtn" 
+                  aria-label="Add zodiac sign"
+                >
+                  ♈
+                </button>
+
+                <button 
+                  type="button" 
+                  class="location-btn" 
+                  id="useLocationBtn" 
+                  aria-label="Add location"
+                >
+                  📍
+                </button>
+
               </div>
 
               <!-- EMOJI DROPDOWN -->
@@ -212,6 +284,28 @@
                 <button type="button">🪐</button>
               </div>
 
+              <!-- ZODIAC DROPDOWN -->
+              <div class="zodiac-picker" id="zodiacPicker">
+                <button type="button" data-zodiac="♈ Aries">♈ Aries</button>
+                <button type="button" data-zodiac="♉ Taurus">♉ Taurus</button>
+                <button type="button" data-zodiac="♊ Gemini">♊ Gemini</button>
+                <button type="button" data-zodiac="♋ Cancer">♋ Cancer</button>
+                <button type="button" data-zodiac="♌ Leo">♌ Leo</button>
+                <button type="button" data-zodiac="♍ Virgo">♍ Virgo</button>
+                <button type="button" data-zodiac="♎ Libra">♎ Libra</button>
+                <button type="button" data-zodiac="♏ Scorpio">♏ Scorpio</button>
+                <button type="button" data-zodiac="♐ Sagittarius">♐ Sagittarius</button>
+                <button type="button" data-zodiac="♑ Capricorn">♑ Capricorn</button>
+                <button type="button" data-zodiac="♒ Aquarius">♒ Aquarius</button>
+                <button type="button" data-zodiac="♓ Pisces">♓ Pisces</button>
+              </div>
+
+              <input type="hidden" name="zodiacTag" id="zodiacTag">
+
+              <p class="selected-zodiac-tag" id="selectedZodiacTag"></p>
+
+              <p id="locationStatus"></p>
+
               <!-- IMAGE PREVIEW -->
               <img 
                 id="imagePreview" 
@@ -222,8 +316,9 @@
               <!-- CAPTION -->
               <textarea 
                 name="caption" 
+                id="caption"
                 class="caption-input" 
-                placeholder="Write something..."
+                placeholder="Share what the stars whispered..."
                 required
               ></textarea>
 
@@ -244,7 +339,6 @@
 
       <% } %>
 
-
       <!-- RECENT POSTS -->
       <% (posts || []).forEach(function(post) { %>
 
@@ -256,6 +350,17 @@
             <img class="profile-icon" src="<%= profileImage %>" alt="profile image">
             <h3><%= post.user %></h3>
           </div>
+
+          <% if (isLoggedIn && post.user === username) { %>
+            <form class="delete-post-form" action="/deletepost" method="POST">
+              <input type="hidden" name="postId" value="<%= post._id %>">
+              <button class="delete-post-btn" type="submit">Delete post</button>
+            </form>
+          <% } %>
+
+          <% if (post.zodiacTag) { %>
+            <p class="post-zodiac-tag"><%= post.zodiacTag %> Energy</p>
+          <% } %>
 
           <!-- CAPTION NOW APPEARS ABOVE THE IMAGE -->
           <p class="post-caption"><%= post.caption %></p>
@@ -269,16 +374,25 @@
             <% if (isLoggedIn) { %>
 
               <% if ((post.likedBy || []).includes(username)) { %>
-                <span class="liked-heart">♥</span>
+
+                <form class="like-form" action="/unlikepost" method="POST">
+                  <input type="hidden" name="postId" value="<%= post._id %>">
+                  <button class="liked-heart" type="submit">♥</button>
+                </form>
+
               <% } else { %>
+
                 <form class="like-form" action="/likepost" method="POST">
                   <input type="hidden" name="postId" value="<%= post._id %>">
                   <button class="heart-button" type="submit">♡</button>
                 </form>
+
               <% } %>
 
             <% } else { %>
+
               <span class="heart-disabled">♡</span>
+
             <% } %>
 
             <span class="likes-count"><%= post.likes %></span>
@@ -288,9 +402,30 @@
           <div class="comments-box">
 
             <% (post.comments || []).forEach(function(comment) { %>
-              <p class="comments">
-                <strong><%= comment.user %>:</strong> <%= comment.text %>
-              </p>
+
+              <div class="comments">
+                <p>
+                  <strong><%= comment.user %>:</strong> <%= comment.text %>
+                </p>
+            
+                  <% if (
+  isLoggedIn && 
+  (
+    comment.user === username || 
+    comment.user === usernameProfi || 
+    post.user === username || 
+    post.user === usernameProfi
+  )
+) { %>
+  <form class="delete-comment-form" action="/deletecomment" method="POST">
+    <input type="hidden" name="postId" value="<%= post._id %>">
+    <input type="hidden" name="commentId" value="<%= comment._id %>">
+    <button class="delete-comment-btn" type="submit">Delete</button>
+  </form>
+<% } %>
+                
+              </div>
+
             <% }) %>
 
             <% if (isLoggedIn) { %>
@@ -311,6 +446,7 @@
 
   </div> <!-- closes posts-content-layout -->
 </div> <!-- closes post-section -->
+
 
 <script>
   // Followed youtube toturial for the card flip, but had lots of issue with the toggle and used chatGBT to help me with the logic and structure of the event listener 
@@ -402,6 +538,75 @@
       if (!clickedEmojiButton && !clickedPicker) {
         emojiPicker.classList.remove("open");
       }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const zodiacBtn = document.getElementById("zodiacBtn");
+    const zodiacPicker = document.getElementById("zodiacPicker");
+    const zodiacTagInput = document.getElementById("zodiacTag");
+    const selectedZodiacTag = document.getElementById("selectedZodiacTag");
+
+    if (zodiacBtn && zodiacPicker && zodiacTagInput && selectedZodiacTag) {
+      zodiacBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        zodiacPicker.classList.toggle("open");
+      });
+
+      zodiacPicker.querySelectorAll("button").forEach(function (button) {
+        button.addEventListener("click", function () {
+          const selectedZodiac = button.dataset.zodiac;
+
+          zodiacTagInput.value = selectedZodiac;
+          zodiacBtn.textContent = selectedZodiac.split(" ")[0];
+
+          selectedZodiacTag.textContent = "Cosmic Tag: " + selectedZodiac;
+          selectedZodiacTag.style.display = "inline-block";
+
+          zodiacPicker.classList.remove("open");
+        });
+      });
+
+      document.addEventListener("click", function (event) {
+        const clickedPicker = zodiacPicker.contains(event.target);
+
+        if (!clickedPicker) {
+          zodiacPicker.classList.remove("open");
+        }
+      });
+    }
+  });
+
+  // LOCATION 
+  const button = document.getElementById("useLocationBtn");
+  const status = document.getElementById("locationStatus");
+  const caption = document.getElementById("caption");
+
+  if (button && status && caption) {
+    button.addEventListener("click", function () {
+      status.textContent = "Finding your location...";
+
+      navigator.geolocation.getCurrentPosition(function (position) {
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+
+        let url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" 
+          + latitude 
+          + "&lon=" 
+          + longitude;
+
+        fetch(url)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            let city = data.address.city || data.address.town || data.address.village || data.address.county;
+
+            caption.value = "📍 " + city + "\n\n" + caption.value;
+
+            status.textContent = "Location added: " + city;
+          });
+      });
     });
   }
 </script>

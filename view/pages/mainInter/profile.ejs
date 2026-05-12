@@ -1,7 +1,8 @@
 <%- include('../../partials/header') %>
 <%- include('../../partials/nav') %>
 
-<main id="loginBox" class="profile">
+<section class="profile-background">
+<main id="profileBox" class="profile">
 
   <div class="profile-section">
 
@@ -88,7 +89,8 @@
 
       </div>
 
-      <!-- RIGHT SIDE -->
+  
+         <!-- RIGHT SIDE -->
       <div class="profile-right-side">
 
         <section class="chat-history">
@@ -97,27 +99,91 @@
 
           <% if (messages && messages.length > 0) { %>
 
-            <% [...messages].reverse().forEach(msg => { %>
+            <%
+              // Group messages into pairs: user message + generator response
+              const chatPairs = [];
+              const orderedMessages = [...messages];
 
-              <% if (msg.sender === "user") { %>
+              for (let i = 0; i < orderedMessages.length; i++) {
+                const currentMessage = orderedMessages[i];
 
-                <div class="history">
-                  <p class="history-card user-history">
-                    <strong>You:</strong> <%= msg.text %>
-                  </p>
+                if (currentMessage.sender === "user") {
+                  const nextMessage = orderedMessages[i + 1];
+
+                  if (nextMessage && nextMessage.sender !== "user") {
+                    chatPairs.push({
+                      user: currentMessage,
+                      generator: nextMessage
+                    });
+
+                    i++;
+                  } else {
+                    chatPairs.push({
+                      user: currentMessage,
+                      generator: null
+                    });
+                  }
+                } else {
+                  chatPairs.push({
+                    user: null,
+                    generator: currentMessage
+                  });
+                }
+              }
+
+              // Show newest conversations first
+              const reversedPairs = [...chatPairs].reverse();
+            %>
+
+            <!-- SLIDER BUTTON LEFT -->
+            <button 
+              type="button" 
+              class="chat-slider-btn chat-slider-prev" 
+              id="chatPrevBtn"
+              aria-label="Previous chat"
+            >
+              ‹
+            </button>
+
+            <!-- ONE SLIDER WRAPPER FOR ALL CARDS -->
+            <div class="history" id="chatSlider">
+
+              <% reversedPairs.forEach(pair => { %>
+
+                <div class="history-card chat-pair-card">
+
+                  <% if (pair.user) { %>
+                    <div class="chat-message-block user-history">
+                      <strong>You:</strong>
+                      <p><%= pair.user.text %></p>
+                    </div>
+                  <% } %>
+
+                  <% if (pair.generator) { %>
+                    <div class="chat-message-block generator-history">
+                      <strong>Generator:</strong>
+                      <p><%= pair.generator.text %></p>
+                    </div>
+                  <% } %>
+
                 </div>
 
-              <% } else { %>
+              <% }) %>
 
-                <div class="history">
-                  <p class="history-card generator-history">
-                    <strong>Generator:</strong> <%= msg.text %>
-                  </p>
-                </div>
+            </div>
 
-              <% } %>
+            <!-- SLIDER BUTTON RIGHT -->
+            <button 
+              type="button" 
+              class="chat-slider-btn chat-slider-next" 
+              id="chatNextBtn"
+              aria-label="Next chat"
+            >
+              ›
+            </button>
 
-            <% }) %>
+            <!-- DOTS -->
+            <div class="chat-slider-dots" id="chatSliderDots"></div>
 
           <% } else { %>
 
@@ -127,14 +193,98 @@
 
         </section>
 
-      </div>
+      </div> <!-- closes profile-right-side -->
 
-    </div>
+    </div> <!-- closes profile-layout -->
 
-  </div>
+  </div> <!-- closes profile-section -->
 
 </main>
+</section>
+
 
 <%- include('../../partials/mobileBottomNav') %>
+
+<script>
+  // Get the slider elements from the page
+  const chatSlider = document.getElementById("chatSlider");
+  const prevButton = document.getElementById("chatPrevBtn");
+  const nextButton = document.getElementById("chatNextBtn");
+  const dotsBox = document.getElementById("chatSliderDots");
+
+  // Only run this code if the chat slider exists on the page
+  if (chatSlider && prevButton && nextButton && dotsBox) {
+
+    // Get all chat cards
+    const cards = chatSlider.querySelectorAll(".history-card");
+
+    // This keeps track of which card we are viewing
+    let currentCard = 0;
+
+    // Create one dot for each card
+    cards.forEach(function (card, index) {
+      const dot = document.createElement("button");
+
+      dot.type = "button";
+      dot.className = "chat-slider-dot";
+
+      // Make the first dot active at the start
+      if (index === 0) {
+        dot.classList.add("active");
+      }
+
+      // When the user clicks a dot, move to that card
+      dot.addEventListener("click", function () {
+        currentCard = index;
+        moveSlider();
+      });
+
+      dotsBox.appendChild(dot);
+    });
+
+    // Move to the next card
+    nextButton.addEventListener("click", function () {
+      if (currentCard < cards.length - 1) {
+        currentCard++;
+        moveSlider();
+      }
+    });
+
+    // Move to the previous card
+    prevButton.addEventListener("click", function () {
+      if (currentCard > 0) {
+        currentCard--;
+        moveSlider();
+      }
+    });
+
+    // This function moves the slider and updates the dots
+    function moveSlider() {
+      const cardWidth = cards[0].offsetWidth;
+      const gap = 24; // same as the CSS gap in .history
+      const moveAmount = cardWidth + gap;
+
+      chatSlider.scrollTo({
+        left: currentCard * moveAmount,
+        behavior: "smooth"
+      });
+
+      updateDots();
+    }
+
+    // This function changes which dot is active
+    function updateDots() {
+      const dots = dotsBox.querySelectorAll(".chat-slider-dot");
+
+      dots.forEach(function (dot, index) {
+        if (index === currentCard) {
+          dot.classList.add("active");
+        } else {
+          dot.classList.remove("active");
+        }
+      });
+    }
+  }
+</script>
+
 <%- include('../../partials/footer') %>
- 

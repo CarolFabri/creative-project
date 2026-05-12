@@ -207,7 +207,7 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.get("/dataCollector", (req, res) => {
+app.get("/dataCollector",requireLogin, (req, res) => {
   res.render("pages/mainInter/dataCollector", {
     errorMessage: null //added error message to render if user submits empty form, this is passed to the ejs file and rendered if not null 
   });
@@ -304,17 +304,21 @@ app.post('/login', async (req, res) => {
   const ok = await userModel.checkUser(username, password);
 
   if (ok) {
-    req.session.username = username;
+    const foundUser = await userModel.findUserbyUsername(username);
+
+    req.session.username = username; // email
+    req.session.usernameProfi = foundUser.usernameProfi; // profile name
+
     return res.redirect('/');
   }
 
   return res.render('pages/mainInter/login', {
     isLoggedIn: false,
     username: null,
+    usernameProfi: null,
     errorMessage: 'Email or password is incorrect. Try again.'
   });
-});
-
+}); //adding usernameProfi to ensure post can be deleted 
 
 
 app.post('/profile/image', requireLogin, upload.single('avatar'), async (req, res) => {
@@ -348,18 +352,23 @@ app.get('/getposts', async (req, res) => {
 app.post("/posts/create", requireLogin, upload.single("avatar"), async (req, res) => {
   try {
     const image = req.file ? "/uploads/" + req.file.filename : "";
+
     const currentUser = await findUser(req.session.username);
-    const displayName = currentUser.usernameProfi || currentUser.username; // use usernameProfi, to only display the profile name not their email
+
+    const displayName = currentUser.usernameProfi || currentUser.username;
+
     const profileImage = currentUser && currentUser.profileImage
       ? currentUser.profileImage
       : "/images/default-profile.png";
 
+    const zodiacTag = req.body.zodiacTag;
+
     await posts.addPost(
-      req.session.username,
+      displayName,
       req.body.caption,
       image,
       profileImage,
-      currentUser.profileImage || "/images/default-profile.png"
+      zodiacTag
     );
 
     res.redirect("/");
@@ -368,7 +377,6 @@ app.post("/posts/create", requireLogin, upload.single("avatar"), async (req, res
     res.status(500).send("Error creating post");
   }
 });
-
 
 app.post("/likepost", requireLogin, async (req, res) => {
   try {
@@ -447,6 +455,134 @@ app.post('/addcomment', requireLogin, async (req, res) => {
     res.redirect('/');
   }
 });
+// Now I'm going to add delete post, comments and unlike post 
+app.post("/deletepost", requireLogin, async (req, res) => {
+  try {
+    const postId = req.body.postId;
+    const post = await posts.getPostById(postId);
+
+    if (!post) { // redirect cannot be "pages/mainInter/social", as render means show EJS file to the user, 
+      //while redirect send browser to another URL/router
+      return res.redirect("/social");
+    }
+    if (post.user !== req.session.username){ // only the user who created the post can delete it
+     return res.redirect("/social");
+    }
+    await posts.deletePost(postId);
+
+    res.redirect("/social");
+
+   } catch (error) {
+    console.error("Delete post error:", error);
+    res.redirect("/social");
+  }
+});
+app.post("/deletecomment", requireLogin, async (req, res) => {
+  try {
+    const postId = req.body.postId;
+    const commentId = req.body.commentId;
+
+    const currentEmail = req.session.username;
+    const currentProfileName = req.session.usernameProfi;
+
+    console.log("DELETE COMMENT DEBUG:");
+    console.log("postId:", postId);
+    console.log("commentId:", commentId);
+    console.log("currentEmail:", currentEmail);
+    console.log("currentProfileName:", currentProfileName);
+
+    const post = await posts.getPostById(postId);
+
+    if (!post) {
+      console.log("Post not found");
+      return res.redirect("/social");
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      console.log("Comment not found");
+      return res.redirect("/social");
+    }
+
+    console.log("post.user:", post.user);
+    console.log("comment.user:", comment.user);
+
+    const isCommentOwner =
+      comment.user === currentEmail ||
+      comment.user === currentProfileName;
+
+    const isPostOwner =
+      post.user === currentEmail ||
+      post.user === currentProfileName;
+
+    if (!isCommentOwner && !isPostOwner) {
+      console.log("Not allowed to delete this comment");
+      return res.redirect("/social");
+    }
+
+    await posts.deleteComment(postId, commentId);
+
+    console.log("Comment deleted successfully");
+
+    res.redirect("/social");
+
+  } catch (error) {
+    console.error("Delete comment error:", error);
+    res.redirect("/social");
+  }
+});
+//Unlike post 
+app.post("/unlikepost", requireLogin, async (req, res) => {
+  try {
+    const postId = req.body.postId;
+    const currentUser = req.session.username;
+
+    const post = await posts.getPostById(postId);
+
+    if (!post) {
+      return res.redirect("/social");
+    }
+
+    if ((post.likedBy || []).includes(currentUser)) {
+      post.likedBy = post.likedBy.filter(function (user) {
+        return user !== currentUser;
+      });
+
+      post.likes = Math.max(0, post.likes - 1);
+
+      await post.save();
+    }
+
+    res.redirect("/social");
+
+  } catch (error) {
+    console.error("Unlike post error:", error);
+    res.redirect("/social");
+  }
+});
+app.post('/register', async (req, res) => {
+  const { username, password,usernameProfi } = req.body;
+
+  if (!username || !password ) {
+    return res.render('pages/mainInter/register', {
+  
+      errorMessage: 'Please fill in all fields.'
+    });
+  }
+
+  const ok = await userModel.addUser(username, password, usernameProfi);
+
+  if (ok) {
+    return res.render('pages/mainInter/login',);
+  } else {
+    return res.render('pages/mainInter/register', {
+      errorMessage: 'Registration failed. Try again.',
+      isLoggedIn: false
+    });
+  }
+});
+
 
 
 app.get('/logout', (req, res) => {
@@ -509,7 +645,7 @@ app.post("/holidaydate", (req, res) => { //removed the login requirement as it w
 //   }
 // });
 
-app.post("/result", async (req, res) => {
+app.post("/result", requireLogin,async (req, res) => {
   try {
     const dob = req.body.dob;
     const holidayDate = req.body.holidayDate;

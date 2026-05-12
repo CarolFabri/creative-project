@@ -102,6 +102,7 @@ module.exports = {
   updateProfile,
   updateProfileImage,
   findUserbyUsername,
+  findUserByProfileUsername,
   getAllUsersWithoutPasswords,
   deleteUserById,
   updateDob
