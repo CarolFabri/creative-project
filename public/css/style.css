@@ -965,6 +965,9 @@ button:hover {
   font-size: 0.85rem;
   color: #d9b7ff;
 }
+.post-caption {
+  white-space: pre-line;
+}
 /* caption textarea — large dark inset like reference */
 .caption-input {
   width: 100%;
