@@ -24,17 +24,17 @@ const mongoDBPassword = process.env.MONGODB_PASSWORD;
 const mongoDBUser = process.env.MONGODB_USERNAME;
 const mongoDBAppName = process.env.MONGODB_MYAPPNAME;
 
-// build the URI using the ENV variables
-const connectionString = `mongodb+srv://${mongoDBUser}:${mongoDBPassword}@cluster0.l8bm6h3.mongodb.net/?appName=${mongoDBAppName}`;
 
-mongoose.connect(process.env.MONGODB_URI, { dbName: "zodiacTravel" })
+const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB Atlas
+mongoose.connect(process.env.MONGODB_URI, { dbName: "zodiacTravel" }) //ENV ALREADY WORKING 
   .then(() => {
     console.log("MongoDB Atlas connected");
 
-   app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server running at http://localhost:${process.env.PORT || 3000}`);
-});
-
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
@@ -46,23 +46,7 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// async function generateHoliday(zodiac, holidayDate) {
-//   const prompt = `
-// Suggest one travel destination for a ${zodiac} traveller planning a holiday around ${holidayDate}.
 
-// Format the answer exactly like this:
-
-// Destination:
-// Why it matches this zodiac:
-// Best activities:
-// Weather:
-// Travel tip:
-// `;
-// const response = await client.responses.create({
-//   model: "gpt-5.4-nano",
-//   input: prompt });
-//   return response.output_text
-// }
 const threeMinutes = 3 * 60 * 1000;
 const oneHour = 1 * 60 * 60 * 1000;
 
