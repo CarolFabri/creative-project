@@ -125,8 +125,18 @@ function checkLoggedInState(req) {
 
 //save image inside public/uploads 
 
+const fs = require("fs");
+
+const uploadDir = path.join(__dirname, "public", "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
-  destination: "public/uploads/",
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
   }
@@ -422,7 +432,7 @@ app.post('/addcomment', requireLogin, async (req, res) => {
       commentText
     );
 
-    if (post.user !== req.session.displayName) {
+    if (post.user !== displayName) {
       await notificationModel.create({
         userToNotify: post.user,
         fromUser: displayName,

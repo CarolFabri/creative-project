@@ -150,7 +150,7 @@
             <div class="notification-stat-box">
               <span>Posts</span>
               <strong>
-                <%= posts ? posts.filter(function(post) { return post.user === username; }).length : 0 %>
+               <%= posts ? posts.filter(function(post) { return post.user === usernameProfi; }).length : 0 %>
               </strong>
             </div>
 
@@ -364,6 +364,7 @@
 
           <!-- CAPTION NOW APPEARS ABOVE THE IMAGE -->
           <p class="post-caption"><%= post.caption %></p>
+      
 
           <% if (post.image) { %>
             <img class="post-image" src="<%= post.image %>" alt="post image">
