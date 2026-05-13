@@ -447,18 +447,36 @@ app.post("/deletepost", requireLogin, async (req, res) => {
     const postId = req.body.postId;
     const post = await posts.getPostById(postId);
 
-    if (!post) { // redirect cannot be "pages/mainInter/social", as render means show EJS file to the user, 
-      //while redirect send browser to another URL/router
+    if (!post) {
       return res.redirect("/social");
     }
-    if (post.user !== req.session.displayName){ // only the user who created the post can delete it
-     return res.redirect("/social");
+
+    const currentUser = await findUser(req.session.username);
+
+    if (!currentUser) {
+      return res.redirect("/social");
     }
+
+    const displayName = currentUser.usernameProfi || currentUser.username;
+
+    console.log("DELETE POST DEBUG:");
+    console.log("post.user:", post.user);
+    console.log("session username:", req.session.username);
+    console.log("displayName:", displayName);
+
+    // only the user who created the post can delete it
+    if (post.user !== displayName) {
+      console.log("Not allowed to delete this post");
+      return res.redirect("/social");
+    }
+
     await posts.deletePost(postId);
+
+    console.log("Post deleted successfully");
 
     res.redirect("/social");
 
-   } catch (error) {
+  } catch (error) {
     console.error("Delete post error:", error);
     res.redirect("/social");
   }

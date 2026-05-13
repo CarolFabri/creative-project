@@ -351,7 +351,7 @@
             <h3><%= post.user %></h3>
           </div>
 
-          <% if (isLoggedIn && post.user === username) { %>
+          <% if (isLoggedIn && post.user === usernameProfi) { %>
             <form class="delete-post-form" action="/deletepost" method="POST">
               <input type="hidden" name="postId" value="<%= post._id %>">
               <button class="delete-post-btn" type="submit">Delete post</button>
