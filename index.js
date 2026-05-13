@@ -150,13 +150,15 @@ app.get("/", async (req, res) => {
 
     if (req.session && req.session.username) {
       const user = await findUser(req.session.username);
+
       if (user) {
         usernameProfi = user.usernameProfi || user.username;
+
+        notifications = await notificationModel.find({
+          userToNotify: usernameProfi,
+          read: false
+        }).sort({ createdAt: -1 });
       }
-      
-      notifications = await notificationModel.find({
-      userToNotify: req.session.username,
-      read: false }).sort({ createAt: -1});
 
       if (!user || !user.dob) {
         message = "Please add your date of birth in your profile first.";
@@ -380,7 +382,7 @@ app.post("/likepost", requireLogin, async (req, res) => {
 
     await posts.likePost(postId, currentUsername);
 
-    if (!alreadyLiked && post.user !== currentUsername) {
+    if (!alreadyLiked && post.user !== displayName) {
       await notificationModel.create({
         userToNotify: post.user,
         fromUser: displayName,
@@ -420,7 +422,7 @@ app.post('/addcomment', requireLogin, async (req, res) => {
       commentText
     );
 
-    if (post.user !== req.session.username) {
+    if (post.user !== req.session.displayName) {
       await notificationModel.create({
         userToNotify: post.user,
         fromUser: displayName,
@@ -449,7 +451,7 @@ app.post("/deletepost", requireLogin, async (req, res) => {
       //while redirect send browser to another URL/router
       return res.redirect("/social");
     }
-    if (post.user !== req.session.username){ // only the user who created the post can delete it
+    if (post.user !== req.session.displayName){ // only the user who created the post can delete it
      return res.redirect("/social");
     }
     await posts.deletePost(postId);
