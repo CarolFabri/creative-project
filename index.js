@@ -47,13 +47,13 @@ const client = new OpenAI({
 });
 
 
-const threeMinutes = 3 * 60 * 1000;
+const tenMinutes = 10 * 60 * 1000;
 const oneHour = 1 * 60 * 60 * 1000;
 
 app.use(sessions({
-  secret: "this is a secret",
+  secret: process.env.SESSION_SECRET || "temporary_local_secret",
   saveUninitialized: false,
-  cookie: { maxAge: threeMinutes },
+  cookie: { maxAge: tenMinutes },
   resave: false
 }));
 
